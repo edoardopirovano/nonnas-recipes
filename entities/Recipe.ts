@@ -6,6 +6,9 @@ export class Recipe {
     id!: number
 
     @Column("text")
+    category!: string
+
+    @Column("text")
     title!: string
 
     @Column("text")

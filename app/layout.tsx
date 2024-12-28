@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import { ApolloProvider } from '../components/ApolloProvider'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
