@@ -1,11 +1,11 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm"
 
-@Entity()
+@Entity("recipe")
 export class Recipe {
     @PrimaryGeneratedColumn()
     id!: number
 
-    @Column()
+    @Column("text")
     title!: string
 
     @Column("text")
