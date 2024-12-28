@@ -1,7 +1,6 @@
 'use client'
 
-import { useQuery, useMutation, gql } from '@apollo/client'
-import { Button } from "@/components/ui/button"
+import { useQuery, gql } from '@apollo/client'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
 
 const GET_RECIPES = gql`
@@ -16,12 +15,6 @@ const GET_RECIPES = gql`
   }
 `
 
-const DELETE_RECIPE = gql`
-  mutation DeleteRecipe($id: ID!) {
-    deleteRecipe(id: $id)
-  }
-`
-
 interface Recipe {
   id: string
   title: string
@@ -32,16 +25,9 @@ interface Recipe {
 
 export default function RecipeList() {
   const { loading, error, data } = useQuery(GET_RECIPES)
-  const [deleteRecipe] = useMutation(DELETE_RECIPE, {
-    refetchQueries: ['GetRecipes'],
-  })
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error.message}</p>
-
-  const handleDelete = async (id: string) => {
-    await deleteRecipe({ variables: { id } })
-  }
 
   return (
     <div className="space-y-4">
@@ -57,7 +43,6 @@ export default function RecipeList() {
             <p className="whitespace-pre-line">{recipe.instructions}</p>
           </CardContent>
           <CardFooter>
-            <Button variant="destructive" onClick={() => handleDelete(recipe.id)}>Delete</Button>
           </CardFooter>
         </Card>
       ))}
