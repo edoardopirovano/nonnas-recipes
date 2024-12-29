@@ -29,7 +29,7 @@ const schema = makeExecutableSchema({
 })
 
 const useDb: Plugin = {
-  async onRequest({ request, fetchAPI, endResponse }) {
+  async onRequest() {
     await initDb()
   }
 }
