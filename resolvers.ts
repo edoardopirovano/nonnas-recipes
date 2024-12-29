@@ -19,7 +19,5 @@ export const resolvers = {
       }))
     },
   },
-  Mutation: {
-  },
 }
 
