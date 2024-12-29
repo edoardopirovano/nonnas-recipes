@@ -10,6 +10,11 @@ export const AppDataSource = new DataSource({
   ssl: {
     rejectUnauthorized: true
   },
+  extra: {
+    max: 1,
+    connectionTimeoutMillis: 5000,
+  },
+  cache: false
 })
 
 export async function initializeDatabase() {
