@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import { createYoga } from 'graphql-yoga'
 import { readFileSync } from 'fs'
 import { join } from 'path'
