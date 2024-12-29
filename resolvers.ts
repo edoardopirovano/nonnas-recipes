@@ -6,8 +6,9 @@ export const resolvers = {
   Query: {
     recipes: async (): Promise<Recipe[]> => {
       const recipeRepository = AppDataSource.getRepository(Recipe)
-      // Decode HTML entities in the ingredients and instructions fields
-      const recipes = await recipeRepository.find()
+      const recipes = await recipeRepository.find({
+        take: 100
+      })
       return recipes.map(recipe => ({
         ...recipe,
         title: decode(recipe.title),

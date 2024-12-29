@@ -8,7 +8,7 @@ export const AppDataSource = new DataSource({
   entities: [Recipe],
   synchronize: true,
   ssl: {
-    rejectUnauthorized: false
+    rejectUnauthorized: true
   },
 })
 
