@@ -1,11 +1,10 @@
 import { AppDataSource } from "../../lib/db";
 import { Recipe } from "../../entities/Recipe";
 import { Like, FindOptionsWhere } from "typeorm";
-import { PaginationControls } from "../../components/PaginationControls";
-import { initDb } from "../api/graphql/route";
+import { PaginationControls } from "@/components/PaginationControls";
 import Link from "next/link";
 import he from "he";
-
+import { initDb } from "../../lib/db";
 interface SearchPageProps {
   searchParams: {
     title?: string;

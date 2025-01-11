@@ -4,24 +4,11 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { resolvers } from "../../../resolvers";
-import { AppDataSource } from "../../../lib/db";
+import { initDb } from "../../../lib/db";
 
 import { Plugin } from "graphql-yoga";
 
 const typeDefs = readFileSync(join(process.cwd(), "schema.graphql"), "utf8");
-
-// Initialize database connection
-export const initDb = async () => {
-  try {
-    if (!AppDataSource.isInitialized) {
-      await AppDataSource.initialize();
-      console.log("Database connected successfully");
-    }
-  } catch (error) {
-    console.error("Error connecting to database:", error);
-    throw error;
-  }
-};
 
 const schema = makeExecutableSchema({
   typeDefs,

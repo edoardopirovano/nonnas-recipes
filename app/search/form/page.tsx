@@ -2,8 +2,7 @@ import { SearchForm } from "../../../components/SearchForm";
 import { RandomImage } from "@/components/RandomImage";
 import { AppDataSource } from "../../../lib/db";
 import { Recipe } from "../../../entities/Recipe";
-import { initDb } from "@/app/api/graphql/route";
-
+import { initDb } from "../../../lib/db";
 export default async function SearchFormPage() {
   await initDb();
   const categoriesQuery = await AppDataSource.getRepository(Recipe)
