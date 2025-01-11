@@ -22,10 +22,16 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const currentPage = parseInt(page);
 
   const whereClause: FindOptionsWhere<Recipe> = {};
-  if (title) whereClause.title = Like(`%${title}%`);
-  if (category) whereClause.category = Like(`%${category}%`);
-  if (ingredients) whereClause.ingredients = Like(`%${ingredients}%`);
+  if (title)
+    whereClause.title = Like(`%${he.encode(title, { decimal: true })}%`);
+  if (category)
+    whereClause.category = Like(`%${he.encode(category, { decimal: true })}%`);
+  if (ingredients)
+    whereClause.ingredients = Like(
+      `%${he.encode(ingredients, { decimal: true })}%`
+    );
 
+  console.log(whereClause);
   const [recipes, total] = await AppDataSource.getRepository(
     Recipe
   ).findAndCount({
