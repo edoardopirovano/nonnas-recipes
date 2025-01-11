@@ -1,10 +1,17 @@
 import 'reflect-metadata'
 import { ApolloProvider } from '../components/ApolloProvider'
 import './globals.css'
+import { Comic_Neue } from 'next/font/google'
+
+const comicFont = Comic_Neue({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  variable: '--font-comic',
+})
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={comicFont.variable}>
       <head>
         <meta charSet="UTF-8" />
         <title>Rosanna&apos;s Recipes</title>

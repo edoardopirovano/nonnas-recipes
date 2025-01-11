@@ -1,63 +1,123 @@
-import { AppDataSource } from '../../lib/db'
-import { Recipe } from '../../entities/Recipe'
-import { RecipeCard } from '../../components/RecipeCard'
-import { Like, FindOptionsWhere } from 'typeorm'
-import { PaginationControls } from '../../components/PaginationControls'
+import { AppDataSource } from "../../lib/db";
+import { Recipe } from "../../entities/Recipe";
+import { Like, FindOptionsWhere } from "typeorm";
+import { PaginationControls } from "../../components/PaginationControls";
+import { initDb } from "../api/graphql/route";
+import Link from "next/link";
+import he from "he";
 
 interface SearchPageProps {
   searchParams: {
-    title?: string
-    category?: string
-    ingredients?: string
-    page?: string
-  }
+    title?: string;
+    category?: string;
+    ingredients?: string;
+    page?: string;
+  };
 }
 
-const ITEMS_PER_PAGE = 20
+const ITEMS_PER_PAGE = 15;
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const { title, category, ingredients, page = '1' } = searchParams
-  const currentPage = parseInt(page)
-  
-  await AppDataSource.initialize()
-  
-  const whereClause: FindOptionsWhere<Recipe> = {}
-  if (title) whereClause.title = Like(`%${title}%`)
-  if (category) whereClause.category = Like(`%${category}%`)
-  if (ingredients) whereClause.ingredients = Like(`%${ingredients}%`)
+  await initDb();
+  const { title, category, ingredients, page = "1" } = searchParams;
+  const currentPage = parseInt(page);
 
-  const [recipes, total] = await AppDataSource.getRepository(Recipe).findAndCount({
+  const whereClause: FindOptionsWhere<Recipe> = {};
+  if (title) whereClause.title = Like(`%${title}%`);
+  if (category) whereClause.category = Like(`%${category}%`);
+  if (ingredients) whereClause.ingredients = Like(`%${ingredients}%`);
+
+  const [recipes, total] = await AppDataSource.getRepository(
+    Recipe
+  ).findAndCount({
     where: whereClause,
-    order: { createdAt: 'DESC' },
+    skip: (currentPage - 1) * ITEMS_PER_PAGE,
     take: ITEMS_PER_PAGE,
-    skip: (currentPage - 1) * ITEMS_PER_PAGE
-  })
+    order: { id: "DESC" },
+  });
 
-  await AppDataSource.destroy()
+  await AppDataSource.destroy();
 
-  const totalPages = Math.ceil(total / ITEMS_PER_PAGE)
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
   return (
-    <main className="min-h-screen p-8">
-      <h1 className="text-2xl font-bold mb-6">Search Results</h1>
-      {recipes.length === 0 ? (
-        <p className="text-center text-gray-500">No recipes found matching your criteria.</p>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="min-h-screen bg-[lightgrey] p-8">
+      <table className="w-[800px] mx-auto mb-4">
+        <tbody>
+          <tr>
+            <td className="text-left">
+              <Link
+                href="/search/form"
+                className="font-['Comic_Sans_MS'] text-sm"
+              >
+                <h4>Pagina di ricerca</h4>
+              </Link>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table className="w-[800px] mx-auto mb-4 border-spacing-[3px] border-separate">
+        <tbody>
+          <tr>
+            <th className="bg-[lightgrey] text-center">
+              <span className="font-['Comic_Sans_MS']">
+                {total} Records &nbsp;&nbsp;&nbsp;&nbsp; Pagina: {currentPage}{" "}
+                of {totalPages}
+              </span>
+            </th>
+          </tr>
+        </tbody>
+      </table>
+
+      <div className="w-[800px] mx-auto">
+        <table className="w-full border-collapse border border-gray-400">
+          <thead>
+            <tr>
+              <th className="bg-[slategray] text-[antiquewhite] p-2 w-[10%] border border-gray-400 font-['Comic_Sans_MS']">
+                Categoria
+              </th>
+              <th className="bg-[slategray] text-[antiquewhite] p-2 w-[30%] border border-gray-400 font-['Comic_Sans_MS']">
+                Titolo
+              </th>
+              <th className="bg-[slategray] text-[antiquewhite] p-2 w-[60%] border border-gray-400 font-['Comic_Sans_MS']">
+                Ingredienti
+              </th>
+            </tr>
+          </thead>
+          <tbody>
             {recipes.map((recipe) => (
-              <RecipeCard key={recipe.id} recipe={recipe} />
+              <tr key={recipe.id}>
+                <td className="bg-[moccasin] p-2 align-top border border-gray-400">
+                  <span className="font-['Comic_Sans_MS'] text-black text-sm">
+                    {he.decode(recipe.category.toLowerCase())}
+                  </span>
+                </td>
+                <td className="bg-[moccasin] p-2 align-top border border-gray-400">
+                  <Link href={`/recipe/${recipe.id}`}>
+                    <span className="font-['Comic_Sans_MS'] text-blue-600 text-sm hover:underline">
+                      {he.decode(recipe.title)}
+                    </span>
+                  </Link>
+                </td>
+                <td className="bg-[moccasin] p-2 align-top border border-gray-400">
+                  <span className="font-['Comic_Sans_MS'] text-[saddlebrown] text-sm whitespace-pre-line">
+                    {he.decode(recipe.ingredients)}
+                  </span>
+                </td>
+              </tr>
             ))}
-          </div>
-          <div className="mt-8">
-            <PaginationControls 
-              currentPage={currentPage} 
-              totalPages={totalPages}
-              searchParams={searchParams}
-            />
-          </div>
-        </>
-      )}
-    </main>
-  )
-} 
+          </tbody>
+        </table>
+      </div>
+
+      <div className="w-[800px] mx-auto mt-4">
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          searchParams={searchParams}
+        />
+      </div>
+    </div>
+  );
+}

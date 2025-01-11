@@ -1,12 +1,12 @@
 type Recipe {
   id: ID!
   title: String!
+  category: String!
   ingredients: String!
   instructions: String!
   createdAt: String!
 }
 
 type Query {
-  recipes: [Recipe!]!
+  recipes(title: String, category: String, ingredients: String): [Recipe!]!
 }
-

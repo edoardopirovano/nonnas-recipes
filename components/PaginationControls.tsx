@@ -1,51 +1,58 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
+import Link from "next/link";
 
 interface PaginationControlsProps {
-  currentPage: number
-  totalPages: number
+  currentPage: number;
+  totalPages: number;
   searchParams: {
-    title?: string
-    category?: string
-    ingredients?: string
-    page?: string
-  }
+    title?: string;
+    category?: string;
+    ingredients?: string;
+  };
 }
 
-export function PaginationControls({ currentPage, totalPages, searchParams }: PaginationControlsProps) {
-  const createPageUrl = (pageNumber: number) => {
-    const params = new URLSearchParams()
-    if (searchParams.title) params.set('title', searchParams.title)
-    if (searchParams.category) params.set('category', searchParams.category)
-    if (searchParams.ingredients) params.set('ingredients', searchParams.ingredients)
-    params.set('page', pageNumber.toString())
-    return `/search?${params.toString()}`
-  }
+export function PaginationControls({
+  currentPage,
+  totalPages,
+  searchParams,
+}: PaginationControlsProps) {
+  const createQueryString = (page: number) => {
+    const params = new URLSearchParams();
+    if (searchParams.title) params.set("title", searchParams.title);
+    if (searchParams.category) params.set("category", searchParams.category);
+    if (searchParams.ingredients)
+      params.set("ingredients", searchParams.ingredients);
+    params.set("page", page.toString());
+    return params.toString();
+  };
 
   return (
-    <div className="flex justify-center items-center gap-2">
+    <div className="flex justify-center gap-2">
       {currentPage > 1 && (
         <Link
-          href={createPageUrl(currentPage - 1)}
-          className="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200"
+          href={`/search?${createQueryString(currentPage - 1)}`}
+          className="px-3 py-1 bg-white border border-gray-300 hover:bg-gray-100 font-['Comic_Sans_MS']"
         >
-          Previous
+          {"<"}
         </Link>
       )}
-      
-      <span className="px-4 py-2">
-        Page {currentPage} of {totalPages}
-      </span>
-      
       {currentPage < totalPages && (
         <Link
-          href={createPageUrl(currentPage + 1)}
-          className="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200"
+          href={`/search?${createQueryString(currentPage + 1)}`}
+          className="px-3 py-1 bg-white border border-gray-300 hover:bg-gray-100 font-['Comic_Sans_MS']"
         >
-          Next
+          {">"}
+        </Link>
+      )}
+      {currentPage < totalPages - 1 && (
+        <Link
+          href={`/search?${createQueryString(totalPages)}`}
+          className="px-3 py-1 bg-white border border-gray-300 hover:bg-gray-100 font-['Comic_Sans_MS']"
+        >
+          {">>"}
         </Link>
       )}
     </div>
-  )
-} 
+  );
+}
