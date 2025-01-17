@@ -6,7 +6,9 @@ const Profile = () => {
   const { user, isLoading } = useUser();
 
   if (isLoading) {
-    return <div>Loading ...</div>;
+    return (
+      <div className="text-[mediumslateblue] italic mb-4">Loading ...</div>
+    );
   }
 
   if (!user) {
