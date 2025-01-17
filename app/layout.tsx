@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { ApolloProvider } from "../components/ApolloProvider";
 import "./globals.css";
+import { Providers } from "./providers";
 import { Comic_Neue } from "next/font/google";
 
 const comicFont = Comic_Neue({
@@ -29,7 +29,7 @@ export default function RootLayout({
         }
       </head>
       <body>
-        <ApolloProvider>{children}</ApolloProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

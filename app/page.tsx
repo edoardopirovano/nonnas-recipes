@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { RandomImage } from "@/components/RandomImage";
 import { DigitDisplay } from "@/components/DigitDisplay";
+import Profile from "./profile/profile";
 
 export default function Home() {
   return (
@@ -52,7 +53,7 @@ export default function Home() {
       </div>
 
       {/* Stats - Note: These would need to be dynamic in a real implementation */}
-      <div className="flex flex-wrap justify-center gap-8 text-[mediumslateblue] font-comic">
+      <div className="flex flex-wrap justify-center gap-8 text-[mediumslateblue] font-comic mb-8">
         <div className="flex items-center gap-2">
           Visitatori: <DigitDisplay number={60059} />
         </div>
@@ -63,6 +64,7 @@ export default function Home() {
           Ricette disponibili: <DigitDisplay number={4287} />
         </div>
       </div>
+      <Profile />
     </main>
   );
 }
