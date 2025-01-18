@@ -11,11 +11,7 @@ export function BackToSearchLink() {
   };
 
   return (
-    <a
-      href="#"
-      onClick={handleClick}
-      className="font-comic text-lg text-[honeydew] hover:underline"
-    >
+    <a href="#" onClick={handleClick} className="font-comic text-lg underline">
       Ritorna alla lista
     </a>
   );

@@ -1,8 +1,11 @@
 import { AppDataSource } from "./lib/db";
 import { Recipe } from "./entities/Recipe";
 import { decode } from "html-entities";
-import { Like, FindOptionsWhere } from "typeorm";
+import { ILike, FindOptionsWhere } from "typeorm";
 import he from "he";
+import { Visitors } from "./entities/Visitors";
+import { trackVisitor } from "./lib/visitors";
+import { LocationData } from "./types/locationData.types";
 
 export const resolvers = {
   Query: {
@@ -14,15 +17,15 @@ export const resolvers = {
 
       const whereClause: FindOptionsWhere<Recipe> = {};
       if (args.title)
-        whereClause.title = Like(
+        whereClause.title = ILike(
           `%${he.encode(args.title, { decimal: true })}%`
         );
       if (args.category)
-        whereClause.category = Like(
+        whereClause.category = ILike(
           `%${he.encode(args.category, { decimal: true })}%`
         );
       if (args.ingredients)
-        whereClause.ingredients = Like(
+        whereClause.ingredients = ILike(
           `%${he.encode(args.ingredients, { decimal: true })}%`
         );
 
@@ -39,6 +42,31 @@ export const resolvers = {
         ingredients: decode(recipe.ingredients),
         instructions: decode(recipe.instructions),
       }));
+    },
+    stats: async () => {
+      const recipeRepository = AppDataSource.getRepository(Recipe);
+      const totalRecipes = await recipeRepository.count();
+      const totalViews = await recipeRepository
+        .createQueryBuilder("recipe")
+        .select("SUM(recipe.views)", "total")
+        .getRawOne();
+      const visitorsRepository = AppDataSource.getRepository(Visitors);
+      const visitorCount = await visitorsRepository
+        .createQueryBuilder("visitors")
+        .select("SUM(visitors.count)", "total")
+        .getRawOne();
+      return {
+        totalRecipes,
+        totalViews: parseInt(totalViews?.total || "0"),
+        visitorCount: parseInt(visitorCount?.total || "0"),
+      };
+    },
+    trackVisitor: async (
+      parent: unknown,
+      args: { locationData: LocationData }
+    ): Promise<boolean> => {
+      trackVisitor(args.locationData);
+      return true;
     },
   },
 };

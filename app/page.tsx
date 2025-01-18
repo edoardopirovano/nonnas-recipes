@@ -1,12 +1,28 @@
+"use client";
+
 import Link from "next/link";
 import { RandomImage } from "@/components/RandomImage";
 import { DigitDisplay } from "@/components/DigitDisplay";
 import Profile from "./profile/profile";
+import { useTrackVisitor } from "@/hooks/useTrackVisitor";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+
+const GET_STATS = gql`
+  query Stats {
+    stats {
+      totalRecipes
+      totalViews
+      visitorCount
+    }
+  }
+`;
 
 export default function Home() {
+  useTrackVisitor();
+  const { data } = useQuery(GET_STATS);
   return (
     <main className="min-h-screen p-8 flex flex-col items-center justify-center bg-[antiquewhite]">
-      {/* Image Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 max-w-4xl">
         <RandomImage width={150} height={150} className="w-full h-auto" />
         <RandomImage width={150} height={150} className="w-full h-auto" />
@@ -14,7 +30,6 @@ export default function Home() {
         <RandomImage width={150} height={150} className="w-full h-auto" />
       </div>
 
-      {/* Welcome Message */}
       <div className="max-w-4xl text-center mb-8">
         <h1 className="text-4xl font-bold text-red-600 mb-6 font-comic">
           Benvenuti nel sito delle ricette di Rosanna!
@@ -34,7 +49,7 @@ export default function Home() {
           Le fotografie provengono dal catalogo FREE di{" "}
           <a
             href="http://www.photocuisine.com/"
-            className="text-orange-600 hover:underline"
+            className="text-orange-600 underline"
           >
             SucréSalé
           </a>
@@ -42,26 +57,26 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Navigation Links */}
       <div className="grid grid-cols-1 md:grid-cols-1 gap-4 max-w-4xl w-full mb-8">
         <Link
           href="/search/form"
-          className="text-red-600 hover:underline text-center font-comic italic"
+          className="text-red-600 underline text-center font-comic italic"
         >
           Buona navigazione!
         </Link>
       </div>
 
-      {/* Stats - Note: These would need to be dynamic in a real implementation */}
       <div className="flex flex-wrap justify-center gap-8 text-[mediumslateblue] font-comic mb-8">
         <div className="flex items-center gap-2">
-          Visitatori: <DigitDisplay number={60059} />
+          Visitatori: <DigitDisplay number={data?.stats?.visitorCount || 0} />
         </div>
         <div className="flex items-center gap-2">
-          Ricette visitate: <DigitDisplay number={8309} />
+          Ricette visitate:{" "}
+          <DigitDisplay number={data?.stats?.totalViews || 0} />
         </div>
         <div className="flex items-center gap-2">
-          Ricette disponibili: <DigitDisplay number={4287} />
+          Ricette disponibili:{" "}
+          <DigitDisplay number={data?.stats?.totalRecipes || 0} />
         </div>
       </div>
       <Profile />

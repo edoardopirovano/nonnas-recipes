@@ -1,11 +1,12 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { Recipe } from "../entities/Recipe";
+import { Visitors } from "@/entities/Visitors";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
   url: process.env.POSTGRES_URL,
-  entities: [Recipe],
+  entities: [Recipe, Visitors],
   synchronize: true,
   ssl: {
     rejectUnauthorized: true,
@@ -17,22 +18,10 @@ export const AppDataSource = new DataSource({
   cache: false,
 });
 
-export async function initializeDatabase() {
+export const initDb = async () => {
   if (!process.env.POSTGRES_URL) {
     throw new Error("POSTGRES_URL environment variable is not set");
   }
-
-  try {
-    await AppDataSource.initialize();
-    console.log("Database connected successfully");
-    return AppDataSource;
-  } catch (error) {
-    console.error("Error connecting to database:", error);
-    throw error;
-  }
-}
-
-export const initDb = async () => {
   try {
     if (!AppDataSource.isInitialized) {
       await AppDataSource.initialize();

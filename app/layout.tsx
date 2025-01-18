@@ -2,6 +2,7 @@ import "reflect-metadata";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Comic_Neue } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const comicFont = Comic_Neue({
   weight: ["400", "700"],
@@ -27,6 +28,7 @@ export default function RootLayout({
             src="https://snippet.meticulous.ai/v1/meticulous.js"
           />
         }
+        <GoogleAnalytics gaId="G-85J7W0VP2Z" />
       </head>
       <body>
         <Providers>{children}</Providers>

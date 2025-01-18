@@ -16,7 +16,7 @@ const Profile = () => {
       <div>
         <a
           href="/api/auth/login"
-          className="text-red-600 hover:underline text-center font-comic italic"
+          className="text-red-600 underline text-center font-comic italic"
         >
           Effettua il login
         </a>{" "}
@@ -30,7 +30,7 @@ const Profile = () => {
         Logged in come {user.name} (
         <a
           href="/api/auth/logout"
-          className="text-red-600 hover:underline text-center font-comic italic"
+          className="text-red-600 underline text-center font-comic italic"
         >
           logout
         </a>

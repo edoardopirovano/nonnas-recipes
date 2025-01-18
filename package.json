@@ -31,6 +31,7 @@
     "typeorm": "^0.3.20"
   },
   "devDependencies": {
+    "@next/third-parties": "^15.1.5",
     "@types/he": "^1.2.3",
     "@types/node": "^20",
     "@types/react": "^18",

@@ -7,6 +7,21 @@ type Recipe {
   createdAt: String!
 }
 
+input LocationDataInput {
+  ip: String!
+  city: String!
+  region: String!
+  country: String!
+}
+
+type Stats {
+  totalRecipes: Int!
+  totalViews: Int!
+  visitorCount: Int!
+}
+
 type Query {
   recipes(title: String, category: String, ingredients: String): [Recipe!]!
+  trackVisitor(locationData: LocationDataInput!): Boolean!
+  stats: Stats!
 }

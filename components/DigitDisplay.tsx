@@ -6,8 +6,7 @@ interface DigitDisplayProps {
 }
 
 export function DigitDisplay({ number, className = "" }: DigitDisplayProps) {
-  // Convert number to string and pad with zeros if needed
-  const digits = Math.abs(number).toString().padStart(1, "0").split("");
+  const digits = Math.abs(number).toString().padStart(5, "0").split("");
 
   return (
     <div className={`flex items-center ${className}`}>
@@ -18,7 +17,7 @@ export function DigitDisplay({ number, className = "" }: DigitDisplayProps) {
           alt={digit}
           width={20}
           height={30}
-          className="inline-block"
+          className="inline-block m-1"
         />
       ))}
     </div>

@@ -53,7 +53,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             <td className="text-left">
               <Link
                 href="/search/form"
-                className="font-['Comic_Sans_MS'] text-sm"
+                className="font-comic text-sm underline"
               >
                 <h4>Pagina di ricerca</h4>
               </Link>
@@ -66,7 +66,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         <tbody>
           <tr>
             <th className="bg-[lightgrey] text-center">
-              <span className="font-['Comic_Sans_MS']">
+              <span className="font-comic">
                 {total} Records &nbsp;&nbsp;&nbsp;&nbsp; Pagina: {currentPage}{" "}
                 of {totalPages}
               </span>
@@ -100,7 +100,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 </td>
                 <td className="bg-[moccasin] p-2 align-top border border-gray-400">
                   <Link href={`/recipe/${recipe.id}`}>
-                    <span className="font-['Comic_Sans_MS'] text-blue-600 text-sm hover:underline">
+                    <span className="font-['Comic_Sans_MS'] text-blue-600 text-sm underline">
                       {he.decode(recipe.title)}
                     </span>
                   </Link>

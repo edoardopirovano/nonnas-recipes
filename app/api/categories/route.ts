@@ -1,18 +1,16 @@
 import { NextResponse } from "next/server";
-import { AppDataSource } from "@/lib/db";
+import { AppDataSource, initDb } from "@/lib/db";
 import { Recipe } from "@/entities/Recipe";
 
 export async function GET() {
   try {
-    await AppDataSource.initialize();
+    await initDb();
 
     const categories = await AppDataSource.getRepository(Recipe)
       .createQueryBuilder("recipe")
       .select("DISTINCT recipe.category", "category")
       .orderBy("recipe.category", "ASC")
       .getRawMany();
-
-    await AppDataSource.destroy();
 
     const formattedCategories = [
       { id: 1, name: "Tutte le categorie" },

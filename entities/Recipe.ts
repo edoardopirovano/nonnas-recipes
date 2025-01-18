@@ -1,23 +1,30 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm"
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+} from "typeorm";
 
 @Entity("recipe")
 export class Recipe {
-    @PrimaryGeneratedColumn()
-    id!: number
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @Column("text")
-    category!: string
+  @Column("text")
+  category!: string;
 
-    @Column("text")
-    title!: string
+  @Column("text")
+  title!: string;
 
-    @Column("text")
-    ingredients!: string
+  @Column("text")
+  ingredients!: string;
 
-    @Column("text")
-    instructions!: string
+  @Column("text")
+  instructions!: string;
 
-    @CreateDateColumn()
-    createdAt!: Date
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @Column({ type: "integer", default: 0 })
+  views!: number;
 }
-

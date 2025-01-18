@@ -1,4 +1,4 @@
-import { AppDataSource } from "../../../lib/db";
+import { AppDataSource, initDb } from "../../../lib/db";
 import { Recipe } from "../../../entities/Recipe";
 import { notFound } from "next/navigation";
 import { RandomImage } from "@/components/RandomImage";
@@ -11,22 +11,49 @@ interface RecipePageProps {
     id: string;
   };
 }
+const colorChoices = [
+  ["firebrick", "greenyellow"],
+  ["darkslateblue", "honeydew"],
+  ["brown", "bisque"],
+  ["cadetblue", "beige"],
+  ["darkgoldenrod", "khaki"],
+  ["forestgreen", "aliceblue"],
+  ["darkblue", "gainsboro"],
+  ["maroon", "orange"],
+  ["darkmagenta", "blanchedalmond"],
+  ["chocolate", "lightgrey"],
+  ["red", "navajowhite"],
+  ["darkred", "gold"],
+  ["coral", "indigo"],
+  ["darkgreen", "greenyellow"],
+  ["crimson", "ghostwhite"],
+];
 
 export default async function RecipePage({ params }: RecipePageProps) {
-  await AppDataSource.initialize();
+  const randomIndex = Math.floor(Math.random() * colorChoices.length);
+  const [bg, text] = colorChoices[randomIndex];
+
+  await initDb();
 
   const recipe = await AppDataSource.getRepository(Recipe).findOne({
     where: { id: parseInt(params.id) },
   });
 
-  await AppDataSource.destroy();
-
   if (!recipe) {
     notFound();
   }
 
+  await AppDataSource.getRepository(Recipe).increment(
+    { id: recipe.id },
+    "views",
+    1
+  );
+
   return (
-    <main className="min-h-screen p-8 bg-[darkslateblue]">
+    <main
+      style={{ backgroundColor: bg, color: text }}
+      className="min-h-screen p-8 flex flex-col items-center justify-center"
+    >
       <div className="max-w-[90%] mx-auto">
         <table className="w-full">
           <tbody>
@@ -39,7 +66,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
                 />
               </td>
               <td className="w-1/2">
-                <div className="font-comic italic text-[honeydew]">
+                <div className="font-comic italic">
                   <strong>
                     Ricetta: <br />
                     {he.decode(recipe.title)}
@@ -64,7 +91,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
                 />
               </td>
               <td>
-                <div className="space-y-6 text-[honeydew] font-comic">
+                <div className="space-y-6 font-comic">
                   <div>
                     <div className="italic">Categoria:</div>
                     <div className="text-sm">{he.decode(recipe.category)}</div>
@@ -114,7 +141,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
               <td className="text-center">
                 <Link
                   href="/search/form"
-                  className="font-comic text-lg text-[honeydew] hover:underline"
+                  className="font-comic text-lg underline"
                 >
                   Pagina di ricerca
                 </Link>
