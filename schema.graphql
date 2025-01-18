@@ -20,8 +20,14 @@ type Stats {
   visitorCount: Int!
 }
 
+type UserInfo {
+  id: String!
+  isAdmin: Boolean!
+}
+
 type Query {
   recipes(title: String, category: String, ingredients: String): [Recipe!]!
   trackVisitor(locationData: LocationDataInput!): Boolean!
   stats: Stats!
+  userInfo: UserInfo
 }

@@ -6,6 +6,8 @@ import he from "he";
 import { Visitors } from "./entities/Visitors";
 import { trackVisitor } from "./lib/visitors";
 import { LocationData } from "./types/locationData.types";
+import { User } from "./entities/User";
+import { getSession } from "@auth0/nextjs-auth0";
 
 export const resolvers = {
   Query: {
@@ -67,6 +69,19 @@ export const resolvers = {
     ): Promise<boolean> => {
       trackVisitor(args.locationData);
       return true;
+    },
+    userInfo: async (): Promise<User | null> => {
+      const session = await getSession();
+      if (!session?.user?.sub) return null;
+      const userRepository = AppDataSource.getRepository(User);
+      const user = await userRepository.findOne({
+        where: { id: session.user.sub },
+      });
+      if (!user) {
+        await userRepository.save({ id: session.user.sub });
+        return { id: session.user.sub, isAdmin: false };
+      }
+      return user;
     },
   },
 };

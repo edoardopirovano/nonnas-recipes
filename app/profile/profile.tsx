@@ -2,8 +2,20 @@
 
 import React from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import { gql, useQuery } from "@apollo/client";
+
+const USER_INFO_QUERY = gql`
+  query UserInfo {
+    userInfo {
+      id
+      isAdmin
+    }
+  }
+`;
+
 const Profile = () => {
   const { user, isLoading } = useUser();
+  const { data } = useQuery(USER_INFO_QUERY);
 
   if (isLoading) {
     return (
@@ -35,6 +47,19 @@ const Profile = () => {
           logout
         </a>
         )
+        {data?.userInfo?.isAdmin && (
+          <span>
+            {" "}
+            (
+            <a
+              href="/admin"
+              className="text-red-600 underline text-center font-comic italic"
+            >
+              admin
+            </a>
+            )
+          </span>
+        )}
       </div>
     </div>
   );
