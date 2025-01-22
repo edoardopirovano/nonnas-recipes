@@ -8,6 +8,7 @@ import { trackVisitor } from "./lib/visitors";
 import { LocationData } from "./types/locationData.types";
 import { User } from "./entities/User";
 import { getSession } from "@auth0/nextjs-auth0";
+import { getCachedStats, setCachedStats } from "./lib/redis";
 
 export const resolvers = {
   Query: {
@@ -46,6 +47,12 @@ export const resolvers = {
       }));
     },
     stats: async () => {
+      const cachedStats = await getCachedStats();
+      if (cachedStats) {
+        return cachedStats;
+      }
+
+      // If no cache, compute stats
       const recipeRepository = AppDataSource.getRepository(Recipe);
       const totalRecipes = await recipeRepository.count();
       const totalViews = await recipeRepository
@@ -57,11 +64,15 @@ export const resolvers = {
         .createQueryBuilder("visitors")
         .select("SUM(visitors.count)", "total")
         .getRawOne();
-      return {
+
+      const stats = {
         totalRecipes,
         totalViews: parseInt(totalViews?.total || "0"),
         visitorCount: parseInt(visitorCount?.total || "0"),
       };
+
+      await setCachedStats(stats);
+      return stats;
     },
     trackVisitor: async (
       parent: unknown,
