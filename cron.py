@@ -7,57 +7,58 @@ custom_image = (
 
 app = modal.App("nonnas-recipes")
 
-@app.function(schedule=modal.Period(hours=1), image=custom_image, secrets=[modal.Secret.from_name("azure-translation-key"), modal.Secret.from_name("database-url")])
+@app.function(schedule=modal.Period(minutes=15), concurrency_limit=1, image=custom_image, secrets=[modal.Secret.from_name("azure-translation-key"), modal.Secret.from_name("database-url")])
 def translate():
     import os
     import psycopg2
     import requests
+    import time
+    import sys
     from datetime import datetime
-    conn = psycopg2.connect(os.environ["DATABASE_URL"])
-    cur = conn.cursor()
-    
-    query = """
-    SELECT r1.id, r1.category, r1.title, r1.ingredients, r1.instructions, r1.language, r1."translateTo"
-    FROM recipe r1
-    WHERE (r1."lastTranslatedAt" IS NULL OR r1."lastTranslatedAt" < r1."modifiedAt")
-    AND r1."translateTo" IS NOT NULL
-    AND r1."translatedFrom" IS NULL
-    LIMIT 10
-    """
-    cur.execute(query)
-    recipes = cur.fetchall()
-    
-    subscription_key = os.environ["AZURE_TRANSLATION_KEY"]
-    endpoint = "https://api.cognitive.microsofttranslator.com"
-    location = "Germany West Central"
-    
-    headers = {
-        'Ocp-Apim-Subscription-Key': subscription_key,
-        'Ocp-Apim-Subscription-Region': location,
-        'Content-type': 'application/json'
-    }
-    
-    for recipe in recipes:
-        id, category, title, ingredients, instructions, source_lang, target_langs = recipe
-        target_langs = target_langs.split(',')
+    try:
+        conn = psycopg2.connect(os.environ["DATABASE_URL"])
+        cur = conn.cursor()
         
-        for target_lang in target_langs:
-            # Prepare texts to translate
-            texts = [
-                {'text': category},
-                {'text': title},
-                {'text': ingredients},
-                {'text': instructions}
-            ]
+        query = """
+        SELECT r1.id, r1.category, r1.title, r1.ingredients, r1.instructions, r1.language, r1."translateTo"
+        FROM recipe r1
+        WHERE (r1."lastTranslatedAt" IS NULL OR r1."lastTranslatedAt" < r1."modifiedAt")
+        AND r1."translateTo" IS NOT NULL
+        AND r1."translatedFromId" IS NULL
+        LIMIT 100
+        """
+        cur.execute(query)
+        recipes = cur.fetchall()
+        
+        subscription_key = os.environ["AZURE_TRANSLATION_KEY"]
+        endpoint = "https://api.cognitive.microsofttranslator.com"
+        location = "germanywestcentral"
+        
+        headers = {
+            'Ocp-Apim-Subscription-Key': subscription_key,
+            'Ocp-Apim-Subscription-Region': location,
+            'Content-type': 'application/json'
+        }
+        
+        for recipe in recipes:
+            id, category, title, ingredients, instructions, source_lang, target_langs = recipe
+            target_langs = target_langs.split(',')
             
-            # Call Azure Translate API
-            params = {
-                'api-version': '3.0',
-                'from': source_lang,
-                'to': target_lang
-            }
-            
-            try:
+            for target_lang in target_langs:
+                texts = [
+                    {'text': category},
+                    {'text': title},
+                    {'text': ingredients},
+                    {'text': instructions}
+                ]
+                
+                params = {
+                    'api-version': '3.0',
+                    'from': source_lang,
+                    'to': target_lang
+                }
+                
+                time.sleep(2)
                 response = requests.post(
                     f'{endpoint}/translate',
                     params=params,
@@ -67,11 +68,10 @@ def translate():
                 response.raise_for_status()
                 translations = response.json()
                 
-                # Insert translated recipe
                 insert_query = """
                 INSERT INTO recipe 
-                (category, title, ingredients, instructions, language, "translatedFrom", "translateTo")
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                (category, title, ingredients, instructions, language, "translatedFromId")
+                VALUES (%s, %s, %s, %s, %s, %s)
                 """
                 
                 cur.execute(insert_query, (
@@ -80,8 +80,7 @@ def translate():
                     translations[2]['translations'][0]['text'],
                     translations[3]['translations'][0]['text'],
                     target_lang,
-                    id,
-                    ''
+                    id
                 ))
                 
                 update_query = """
@@ -93,11 +92,8 @@ def translate():
                 
                 conn.commit()
                 print(f"Translated recipe {id} from {source_lang} to {target_lang}")
-                
-            except Exception as e:
-                print(f"Error translating recipe {id}: {str(e)}")
-                conn.rollback()
-                break
-    
-    cur.close()
-    conn.close()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        sys.exit(f"Error translating recipes: {str(e)}")
+
