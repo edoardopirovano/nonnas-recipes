@@ -1,5 +1,5 @@
 import { AppDataSource } from "./lib/db";
-import { Recipe } from "./entities/Recipe";
+import { Language, Recipe } from "./entities/Recipe";
 import { decode } from "html-entities";
 import { ILike, FindOptionsWhere } from "typeorm";
 import he from "he";
@@ -14,7 +14,12 @@ export const resolvers = {
   Query: {
     recipes: async (
       parent: unknown,
-      args: { title?: string; category?: string; ingredients?: string }
+      args: {
+        title?: string;
+        category?: string;
+        ingredients?: string;
+        language?: string;
+      }
     ): Promise<Recipe[]> => {
       const recipeRepository = AppDataSource.getRepository(Recipe);
 
@@ -31,6 +36,7 @@ export const resolvers = {
         whereClause.ingredients = ILike(
           `%${he.encode(args.ingredients, { decimal: true })}%`
         );
+      if (args.language) whereClause.language = args.language as Language;
 
       const recipes = await recipeRepository.find({
         where: whereClause,
@@ -54,7 +60,11 @@ export const resolvers = {
 
       // If no cache, compute stats
       const recipeRepository = AppDataSource.getRepository(Recipe);
-      const totalRecipes = await recipeRepository.count();
+      const totalRecipes = await recipeRepository
+        .createQueryBuilder("recipe")
+        .select("COUNT(recipe.id)", "total")
+        .where("recipe.translatedFromId IS NULL")
+        .getRawOne();
       const totalViews = await recipeRepository
         .createQueryBuilder("recipe")
         .select("SUM(recipe.views)", "total")

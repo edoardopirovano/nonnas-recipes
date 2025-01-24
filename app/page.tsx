@@ -7,6 +7,8 @@ import Profile from "./profile/profile";
 import { useTrackVisitor } from "@/hooks/useTrackVisitor";
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const GET_STATS = gql`
   query Stats {
@@ -21,8 +23,12 @@ const GET_STATS = gql`
 export default function Home() {
   useTrackVisitor();
   const { data } = useQuery(GET_STATS);
+  const { t } = useTranslation();
+
   return (
-    <main className="min-h-screen p-8 flex flex-col items-center justify-center bg-[antiquewhite]">
+    <main className="min-h-screen p-8 flex flex-col items-center justify-center bg-[antiquewhite] relative">
+      <LanguageSelector />
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 max-w-4xl">
         <RandomImage width={150} height={150} className="w-full h-auto" />
         <RandomImage width={150} height={150} className="w-full h-auto" />
@@ -32,21 +38,14 @@ export default function Home() {
 
       <div className="max-w-4xl text-center mb-8">
         <h1 className="text-4xl font-bold text-red-600 mb-6 font-comic">
-          Benvenuti nel sito delle ricette di Rosanna!
+          {t("welcome")}
         </h1>
+        <p className="text-[mediumslateblue] italic mb-4">{t("description")}</p>
         <p className="text-[mediumslateblue] italic mb-4">
-          Un sito molto spartano che presenta tutte le ricette pazientemente
-          digitate negli ultimi anni su un foglio Excel da Ros (la mia gentil
-          Signora)
-        </p>
-        <p className="text-[mediumslateblue] italic mb-4">
-          Le ricette sono state raccolte fra le più credibili, accattivanti e
-          fattibili esposte da maestri gastronomici (Marchesi, Ravaioli, Santin,
-          Mariola, Rugiati, Corelli, Vissani etc.) nel Gambero Rosso, Gusto,
-          Mezzogiorno di cuoco, WEB e quant&apos;altri.
+          {t("recipeSource")}
         </p>
         <p className="text-[mediumslateblue] italic">
-          Le fotografie provengono dal catalogo FREE di{" "}
+          {t("photoCredit")}{" "}
           <a
             href="http://www.photocuisine.com/"
             className="text-orange-600 underline"
@@ -62,20 +61,21 @@ export default function Home() {
           href="/search/form"
           className="text-red-600 underline text-center font-comic italic"
         >
-          Buona navigazione!
+          {t("navigation")}
         </Link>
       </div>
 
       <div className="flex flex-wrap justify-center gap-8 text-[mediumslateblue] font-comic mb-8">
         <div className="flex items-center gap-2">
-          Visitatori: <DigitDisplay number={data?.stats?.visitorCount || 0} />
+          {t("visitors")}:{" "}
+          <DigitDisplay number={data?.stats?.visitorCount || 0} />
         </div>
         <div className="flex items-center gap-2">
-          Ricette visitate:{" "}
+          {t("recipesViewed")}:{" "}
           <DigitDisplay number={data?.stats?.totalViews || 0} />
         </div>
         <div className="flex items-center gap-2">
-          Ricette disponibili:{" "}
+          {t("recipesAvailable")}:{" "}
           <DigitDisplay number={data?.stats?.totalRecipes || 0} />
         </div>
       </div>

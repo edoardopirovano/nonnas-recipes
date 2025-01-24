@@ -3,6 +3,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { Comic_Neue } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const comicFont = Comic_Neue({
   weight: ["400", "700"],
@@ -31,7 +32,9 @@ export default function RootLayout({
         <GoogleAnalytics gaId="G-85J7W0VP2Z" />
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <LanguageProvider>
+          <Providers>{children}</Providers>
+        </LanguageProvider>
       </body>
     </html>
   );

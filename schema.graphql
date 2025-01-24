@@ -5,6 +5,7 @@ type Recipe {
   ingredients: String!
   instructions: String!
   createdAt: String!
+  language: String!
 }
 
 input LocationDataInput {
@@ -26,7 +27,12 @@ type UserInfo {
 }
 
 type Query {
-  recipes(title: String, category: String, ingredients: String): [Recipe!]!
+  recipes(
+    title: String
+    category: String
+    ingredients: String
+    language: String
+  ): [Recipe!]!
   trackVisitor(locationData: LocationDataInput!): Boolean!
   stats: Stats!
   userInfo: UserInfo
