@@ -3,7 +3,11 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
 } from "typeorm";
+
+export type Language = "en" | "it" | "ja";
 
 @Entity("recipe")
 export class Recipe {
@@ -25,6 +29,21 @@ export class Recipe {
   @CreateDateColumn()
   createdAt!: Date;
 
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  modifiedAt!: Date;
+
   @Column({ type: "integer", default: 0 })
   views!: number;
+
+  @Column({ type: "text", default: "it" })
+  language!: Language;
+
+  @Column({ type: "text", default: "en,ja" })
+  translateTo!: Language[];
+
+  @ManyToOne(() => Recipe, (recipe) => recipe.id, { nullable: true })
+  translatedFrom!: Recipe | null;
+
+  @Column({ type: "timestamp", nullable: true })
+  lastTranslatedAt!: Date | null;
 }
