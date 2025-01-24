@@ -3,7 +3,6 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
   ManyToOne,
 } from "typeorm";
 
@@ -35,10 +34,10 @@ export class Recipe {
   @Column({ type: "integer", default: 0 })
   views!: number;
 
-  @Column({ type: "text", default: "it" })
+  @Column({ type: "text" })
   language!: Language;
 
-  @Column({ type: "text", default: "en,ja" })
+  @Column({ type: "text" })
   translateTo!: Language[];
 
   @ManyToOne(() => Recipe, (recipe) => recipe.id, { nullable: true })
