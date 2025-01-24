@@ -1,13 +1,18 @@
 import modal
-import os
-import psycopg2
-import requests
-from datetime import datetime
+
+custom_image = (
+    modal.Image.debian_slim(python_version="3.13.1")
+    .pip_install("psycopg2-binary==2.9.10", "requests==2.32.3")
+)
 
 app = modal.App("nonnas-recipes")
 
-@app.function(schedule=modal.Period(hours=1), secrets=[modal.Secret.from_name("azure-translation-key"), modal.Secret.from_name("database-url")])
+@app.function(schedule=modal.Period(hours=1), image=custom_image, secrets=[modal.Secret.from_name("azure-translation-key"), modal.Secret.from_name("database-url")])
 def translate():
+    import os
+    import psycopg2
+    import requests
+    from datetime import datetime
     conn = psycopg2.connect(os.environ["DATABASE_URL"])
     cur = conn.cursor()
     
@@ -15,7 +20,7 @@ def translate():
     SELECT r1.id, r1.category, r1.title, r1.ingredients, r1.instructions, r1.language, r1."translateTo"
     FROM recipe r1
     WHERE (r1."lastTranslatedAt" IS NULL OR r1."lastTranslatedAt" < r1."modifiedAt")
-    AND array_length(r1."translateTo", 1) > 0
+    AND r1."translateTo" IS NOT NULL
     AND r1."translatedFrom" IS NULL
     LIMIT 10
     """
