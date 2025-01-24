@@ -36,6 +36,13 @@ export const translations = {
   loggedInAs: "{name}としてログイン中",
   logout: "ログアウト",
   adminPanel: "管理者",
+  // Search results translations
+  searchPageLink: "検索ページ",
+  records: "件",
+  page: "ページ",
+  resultsCategory: "カテゴリー",
+  resultsTitle: "タイトル",
+  resultsIngredients: "材料",
 };
 
 export type TranslationKeys = keyof typeof translations;

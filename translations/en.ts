@@ -36,6 +36,13 @@ export const translations = {
   loggedInAs: "Logged in as {name}",
   logout: "logout",
   adminPanel: "admin",
+  // Search results translations
+  searchPageLink: "Search page",
+  records: "Records",
+  page: "Page",
+  resultsCategory: "Category",
+  resultsTitle: "Title",
+  resultsIngredients: "Ingredients",
 };
 
 export type TranslationKeys = keyof typeof translations;

@@ -36,6 +36,13 @@ export const translations = {
   loggedInAs: "Connesso come {name}",
   logout: "disconnetti",
   adminPanel: "admin",
+  // Search results translations
+  searchPageLink: "Pagina di ricerca",
+  records: "Risultati",
+  page: "Pagina",
+  resultsCategory: "Categoria",
+  resultsTitle: "Titolo",
+  resultsIngredients: "Ingredienti",
 };
 
 export type TranslationKeys = keyof typeof translations;
