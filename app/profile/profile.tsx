@@ -3,6 +3,7 @@
 import React from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { gql, useQuery } from "@apollo/client";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const USER_INFO_QUERY = gql`
   query UserInfo {
@@ -16,10 +17,11 @@ const USER_INFO_QUERY = gql`
 const Profile = () => {
   const { user, isLoading } = useUser();
   const { data } = useQuery(USER_INFO_QUERY);
+  const { t } = useTranslation();
 
   if (isLoading) {
     return (
-      <div className="text-[mediumslateblue] italic mb-4">Loading ...</div>
+      <div className="text-[mediumslateblue] italic mb-4">{t("loading")}</div>
     );
   }
 
@@ -30,7 +32,7 @@ const Profile = () => {
           href="/api/auth/login"
           className="text-red-600 underline text-center font-comic italic"
         >
-          Effettua il login
+          {t("login")}
         </a>{" "}
       </div>
     );
@@ -39,12 +41,12 @@ const Profile = () => {
   return (
     <div>
       <div className="text-[mediumslateblue] italic mb-4">
-        Logged in come {user.name} (
+        {t("loggedInAs").replace("{name}", user.name || "")} (
         <a
           href="/api/auth/logout"
           className="text-red-600 underline text-center font-comic italic"
         >
-          logout
+          {t("logout")}
         </a>
         )
         {data?.userInfo?.isAdmin && (
@@ -55,7 +57,7 @@ const Profile = () => {
               href="/admin"
               className="text-red-600 underline text-center font-comic italic"
             >
-              admin
+              {t("adminPanel")}
             </a>
             )
           </span>

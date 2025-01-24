@@ -8,15 +8,18 @@ export default async function SearchFormPage() {
   await initDb();
   const categoriesQuery = await AppDataSource.getRepository(Recipe)
     .createQueryBuilder("recipe")
-    .select("DISTINCT recipe.category", "category")
-    .orderBy("recipe.category", "ASC")
+    .select("DISTINCT category, language")
+    .orderBy("category", "ASC")
     .getRawMany();
 
   const categories = [
-    { id: 1, name: "Tutte le categorie" },
+    { id: 1, name: "All categories", language: "en" },
+    { id: 2, name: "Tutte le categorie", language: "it" },
+    { id: 3, name: "すべてのカテゴリー", language: "ja" },
     ...categoriesQuery.map((cat, index) => ({
-      id: index + 2,
+      id: index + 100,
       name: cat.category.toLowerCase(),
+      language: cat.language.toLowerCase(),
     })),
   ];
   return (

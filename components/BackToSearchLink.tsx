@@ -1,18 +1,22 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
-export function BackToSearchLink() {
-  const router = useRouter();
+interface BackToSearchLinkProps {
+  text: string;
+}
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    router.back();
-  };
+export function BackToSearchLink({ text }: BackToSearchLinkProps) {
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams?.toString());
 
   return (
-    <a href="#" onClick={handleClick} className="font-comic text-lg underline">
-      Ritorna alla lista
-    </a>
+    <Link
+      href={`/search?${params.toString()}`}
+      className="font-comic text-lg underline"
+    >
+      {text}
+    </Link>
   );
 }

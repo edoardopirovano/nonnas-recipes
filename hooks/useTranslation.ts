@@ -14,7 +14,7 @@ export const useTranslation = () => {
   const { language } = useLanguage();
 
   const t = (key: TranslationKeys) => {
-    return translations[language][key];
+    return translations[language][key] as string;
   };
 
   return { t };

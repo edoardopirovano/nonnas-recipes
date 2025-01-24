@@ -22,7 +22,6 @@ export const LanguageSelector = () => {
               ? "border-red-600 scale-110"
               : "border-transparent"
           }`}
-          aria-label={`Switch to ${lang} language`}
         >
           <Image
             src={flag}
