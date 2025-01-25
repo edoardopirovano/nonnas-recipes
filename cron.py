@@ -43,6 +43,12 @@ def translate():
         for recipe in recipes:
             id, category, title, ingredients, instructions, source_lang, target_langs = recipe
             target_langs = target_langs.split(',')
+
+            delete_query = """
+            DELETE FROM recipe
+            WHERE "translatedFromId" = %s
+            """
+            cur.execute(delete_query, (id))
             
             for target_lang in target_langs:
                 texts = [
@@ -90,8 +96,8 @@ def translate():
             WHERE id = %s
             """
             cur.execute(update_query, (datetime.now(), id))
-            
             conn.commit()
+
         cur.close()
         conn.close()
     except Exception as e:
