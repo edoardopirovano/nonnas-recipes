@@ -29,4 +29,5 @@ jobs:
 
       - name: Deploy job
         run: |
-          modal deploy cron.py
+          modal deploy --env staging cron.py
+          modal deploy --env main cron.py

@@ -48,7 +48,7 @@ def translate():
             DELETE FROM recipe
             WHERE "translatedFromId" = %s
             """
-            cur.execute(delete_query, (id))
+            cur.execute(delete_query, (id,))
             
             for target_lang in target_langs:
                 texts = [
