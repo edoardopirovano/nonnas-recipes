@@ -82,16 +82,16 @@ def translate():
                     target_lang,
                     id
                 ))
-                
-                update_query = """
-                UPDATE recipe 
-                SET "lastTranslatedAt" = %s
-                WHERE id = %s
-                """
-                cur.execute(update_query, (datetime.now(), id))
-                
-                conn.commit()
                 print(f"Translated recipe {id} from {source_lang} to {target_lang}")
+                
+            update_query = """
+            UPDATE recipe 
+            SET "lastTranslatedAt" = %s
+            WHERE id = %s
+            """
+            cur.execute(update_query, (datetime.now(), id))
+            
+            conn.commit()
         cur.close()
         conn.close()
     except Exception as e:
