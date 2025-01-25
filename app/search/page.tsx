@@ -47,7 +47,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   return (
     <main className="min-h-screen bg-[lightgrey] p-4 sm:p-8">
       <Link
-        href="/"
+        href="/search/form"
         className="inline-block mb-4 text-blue-800 hover:underline font-comic"
       >
         ← {getServerTranslation("searchPageLink")}

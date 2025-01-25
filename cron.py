@@ -7,7 +7,7 @@ custom_image = (
 
 app = modal.App("nonnas-recipes")
 
-@app.function(schedule=modal.Period(minutes=5), concurrency_limit=1, timeout=300, image=custom_image, secrets=[modal.Secret.from_name("azure-translation-key"), modal.Secret.from_name("database-url")])
+@app.function(schedule=modal.Period(minutes=15), concurrency_limit=1, timeout=300, image=custom_image, secrets=[modal.Secret.from_name("azure-translation-key"), modal.Secret.from_name("database-url")])
 def translate():
     import os
     import psycopg2
@@ -25,7 +25,7 @@ def translate():
         WHERE (r1."lastTranslatedAt" IS NULL OR r1."lastTranslatedAt" < r1."modifiedAt")
         AND r1."translateTo" IS NOT NULL
         AND r1."translatedFromId" IS NULL
-        LIMIT 200
+        LIMIT 100
         """
         cur.execute(query)
         recipes = cur.fetchall()
@@ -50,8 +50,8 @@ def translate():
             recipes_by_language[key].append(recipe)
         
         for (source_lang, target_langs), lang_recipes in recipes_by_language.items():
-            for i in range(0, len(lang_recipes), 10):
-                batch = lang_recipes[i:i+10]
+            for i in range(0, len(lang_recipes), 5):
+                batch = lang_recipes[i:i+5]
                 
                 batch_ids = [recipe[0] for recipe in batch]
                 delete_query = """
@@ -75,7 +75,7 @@ def translate():
                     'to': list(target_langs)
                 }
                 
-                time.sleep(2)
+                time.sleep(5)
                 response = requests.post(
                     f'{endpoint}/translate',
                     params=params,
