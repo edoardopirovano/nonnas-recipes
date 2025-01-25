@@ -37,7 +37,7 @@ export function SearchForm({ categories }: SearchFormProps) {
     const searchParams = new URLSearchParams();
     Object.entries(filters).forEach(([key, value]) => {
       if (value && value !== allCategories.name) {
-        searchParams.append(key, value);
+        searchParams.append(key, encodeURIComponent(value));
       }
     });
     router.push(`/search?${searchParams.toString()}`);

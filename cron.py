@@ -7,7 +7,7 @@ custom_image = (
 
 app = modal.App("nonnas-recipes")
 
-@app.function(schedule=modal.Period(minutes=15), concurrency_limit=1, timeout=1200, image=custom_image, secrets=[modal.Secret.from_name("azure-translation-key"), modal.Secret.from_name("database-url")])
+@app.function(schedule=modal.Period(minutes=30), concurrency_limit=1, timeout=900, image=custom_image, secrets=[modal.Secret.from_name("azure-translation-key"), modal.Secret.from_name("database-url")])
 def translate():
     import os
     import psycopg2
@@ -103,3 +103,57 @@ def translate():
     except Exception as e:
         sys.exit(f"Error translating recipes: {str(e)}")
 
+@app.function(concurrency_limit=1, timeout=3600, image=custom_image, secrets=[modal.Secret.from_name("database-url")])
+def decode_html_entities():
+    import os
+    import psycopg2
+    import sys
+    import html
+    try:
+        conn = psycopg2.connect(os.environ["DATABASE_URL"])
+        cur = conn.cursor()
+        
+        last_id = -1
+        while True:
+            query = """
+            SELECT id, category, title, ingredients, instructions
+            FROM recipe
+            WHERE id > %s
+            ORDER BY id
+            LIMIT 100
+            """
+            cur.execute(query, (last_id,))
+            recipes = cur.fetchall()
+            
+            if not recipes:
+                break
+                
+            for recipe in recipes:
+                id, category, title, ingredients, instructions = recipe
+                last_id = id
+                
+                update_query = """
+                UPDATE recipe 
+                SET 
+                    category = %s,
+                    title = %s,
+                    ingredients = %s,
+                    instructions = %s
+                WHERE id = %s
+                """
+                
+                cur.execute(update_query, (
+                    html.unescape(category) if category else None,
+                    html.unescape(title) if title else None,
+                    html.unescape(ingredients) if ingredients else None,
+                    html.unescape(instructions) if instructions else None,
+                    id
+                ))
+                print(f"Decoded HTML entities in recipe {id}")
+            
+            conn.commit()
+        cur.close()
+        conn.close()
+        
+    except Exception as e:
+        sys.exit(f"Error decoding HTML entities: {str(e)}")

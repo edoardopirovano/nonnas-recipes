@@ -16,7 +16,10 @@ export const getServerLanguage = (): Language => {
   return (cookieStore.get("language")?.value as Language) || "en";
 };
 
-export const getServerTranslation = (key: TranslationKeys): string => {
-  const language = getServerLanguage();
+export const getServerTranslation = (
+  key: TranslationKeys,
+  options?: { language: Language }
+): string => {
+  const language = options?.language || getServerLanguage();
   return translations[language][key] as string;
 };

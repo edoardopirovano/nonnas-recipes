@@ -9,13 +9,11 @@ export const translations = {
   visitors: "Visitatori",
   recipesViewed: "Ricette visitate",
   recipesAvailable: "Ricette disponibili",
-  // Search form translations
   inCategory: "Nella categoria:",
   containsWord: "Che contiene la parola/frase:",
   inTitle: "Nel titolo:",
   inIngredients: "Negli ingredienti:",
   search: "Ricerca",
-  // Recipe page translations
   recipe: "Ricetta:",
   category: "Categoria:",
   ingredients: "Ingredienti:",
@@ -23,20 +21,19 @@ export const translations = {
   lastUpdate: "Data ultimo aggiornamento:",
   searchPage: "Pagina di ricerca",
   backToSearch: "Torna ai risultati",
-  // Language names for accessibility
+  backToHome: "Torna alla home",
+  allCategories: "Tutte le categorie",
   switchToLanguage: "Passa a {language}",
   languageNames: {
     en: "Inglese",
     it: "Italiano",
     ja: "Giapponese",
   },
-  // Profile page translations
   loading: "Caricamento ...",
   login: "Effettua il login",
   loggedInAs: "Connesso come {name}",
   logout: "disconnetti",
   adminPanel: "admin",
-  // Search results translations
   searchPageLink: "Pagina di ricerca",
   records: "Risultati",
   page: "Pagina",
