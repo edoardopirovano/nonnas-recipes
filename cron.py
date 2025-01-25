@@ -7,7 +7,7 @@ custom_image = (
 
 app = modal.App("nonnas-recipes")
 
-@app.function(schedule=modal.Period(minutes=30), concurrency_limit=1, timeout=900, image=custom_image, secrets=[modal.Secret.from_name("azure-translation-key"), modal.Secret.from_name("database-url")])
+@app.function(schedule=modal.Period(minutes=15), concurrency_limit=1, timeout=800, image=custom_image, secrets=[modal.Secret.from_name("azure-translation-key"), modal.Secret.from_name("database-url")])
 def translate():
     import os
     import psycopg2
