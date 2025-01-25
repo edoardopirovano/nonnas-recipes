@@ -1,6 +1,6 @@
 import { AppDataSource } from "../../lib/db";
 import { Language, Recipe } from "../../entities/Recipe";
-import { Like, FindOptionsWhere } from "typeorm";
+import { FindOptionsWhere, ILike } from "typeorm";
 import { initDb } from "../../lib/db";
 import { PaginationControls } from "@/components/PaginationControls";
 import Link from "next/link";
@@ -24,11 +24,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const currentPage = parseInt(page);
 
   const whereClause: FindOptionsWhere<Recipe> = {};
-  if (title) whereClause.title = Like(`%${decodeURIComponent(title)}%`);
+  if (title) whereClause.title = ILike(`%${decodeURIComponent(title)}%`);
   if (category)
-    whereClause.category = Like(`%${decodeURIComponent(category)}%`);
+    whereClause.category = ILike(`%${decodeURIComponent(category)}%`);
   if (ingredients)
-    whereClause.ingredients = Like(`%${decodeURIComponent(ingredients)}%`);
+    whereClause.ingredients = ILike(`%${decodeURIComponent(ingredients)}%`);
   if (language) whereClause.language = language as Language;
 
   const [recipes, total] = await AppDataSource.getRepository(

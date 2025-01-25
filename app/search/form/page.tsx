@@ -19,7 +19,7 @@ export default async function SearchFormPage() {
       id: index + 1,
       name: getServerTranslation("allCategories", {
         language: language as Language,
-      }),
+      }).toLowerCase(),
       language,
     })),
     ...categoriesQuery.map((cat, index) => ({
