@@ -16,10 +16,11 @@ const LanguageContext = createContext<LanguageContextType>({
 
 export const useLanguage = () => useContext(LanguageContext);
 
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [language, setLanguage] = useState<Language>("en");
+export const LanguageProvider: React.FC<{
+  children: React.ReactNode;
+  initialLanguage: Language;
+}> = ({ children, initialLanguage }) => {
+  const [language, setLanguage] = useState<Language>(initialLanguage);
   const cookies = useCookies();
 
   useEffect(() => {

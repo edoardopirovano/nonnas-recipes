@@ -3,7 +3,7 @@ import { Recipe } from "../../../entities/Recipe";
 import { notFound } from "next/navigation";
 import { RecipeView } from "@/components/RecipeView";
 
-interface RecipePageProps {
+export interface RecipePageProps {
   params: {
     id: string;
   };
