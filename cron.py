@@ -25,7 +25,7 @@ def translate():
         WHERE (r1."lastTranslatedAt" IS NULL OR r1."lastTranslatedAt" < r1."modifiedAt")
         AND r1."translateTo" IS NOT NULL
         AND r1."translatedFromId" IS NULL
-        LIMIT 100
+        LIMIT 200
         """
         cur.execute(query)
         recipes = cur.fetchall()
@@ -50,8 +50,8 @@ def translate():
             recipes_by_language[key].append(recipe)
         
         for (source_lang, target_langs), lang_recipes in recipes_by_language.items():
-            for i in range(0, len(lang_recipes), 5):
-                batch = lang_recipes[i:i+5]
+            for i in range(0, len(lang_recipes), 10):
+                batch = lang_recipes[i:i+10]
                 
                 batch_ids = [recipe[0] for recipe in batch]
                 delete_query = """
@@ -75,7 +75,7 @@ def translate():
                     'to': list(target_langs)
                 }
                 
-                time.sleep(5)
+                time.sleep(2)
                 response = requests.post(
                     f'{endpoint}/translate',
                     params=params,
