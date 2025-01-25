@@ -27,7 +27,9 @@ export default function Home() {
 
   return (
     <main className="min-h-screen p-8 flex flex-col items-center justify-center bg-[antiquewhite] relative">
-      <LanguageSelector />
+      <div className="w-full flex justify-end mb-8">
+        <LanguageSelector />
+      </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 max-w-4xl">
         <RandomImage width={150} height={150} className="w-full h-auto" />

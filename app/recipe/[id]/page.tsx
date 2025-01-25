@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { getServerTranslation } from "@/utils/serverTranslation";
 import { RandomImage } from "@/components/RandomImage";
 import { BackToSearchLink } from "@/components/BackToSearchLink";
-import { Link } from "lucide-react";
+import Link from "next/link";
+import { ColouredMain } from "@/components/ColouredContainer";
 
 interface RecipePageProps {
   params: {
@@ -12,28 +13,7 @@ interface RecipePageProps {
   };
 }
 
-const colorChoices = [
-  ["firebrick", "greenyellow"],
-  ["darkslateblue", "honeydew"],
-  ["brown", "bisque"],
-  ["cadetblue", "beige"],
-  ["darkgoldenrod", "khaki"],
-  ["forestgreen", "aliceblue"],
-  ["darkblue", "gainsboro"],
-  ["maroon", "orange"],
-  ["darkmagenta", "blanchedalmond"],
-  ["chocolate", "lightgrey"],
-  ["red", "navajowhite"],
-  ["darkred", "gold"],
-  ["coral", "indigo"],
-  ["darkgreen", "greenyellow"],
-  ["crimson", "ghostwhite"],
-];
-
 export default async function RecipePage({ params }: RecipePageProps) {
-  const randomIndex = Math.floor(Math.random() * colorChoices.length);
-  const [bg, text] = colorChoices[randomIndex];
-
   await initDb();
 
   const recipe = await AppDataSource.getRepository(Recipe).findOne({
@@ -51,101 +31,68 @@ export default async function RecipePage({ params }: RecipePageProps) {
   );
 
   return (
-    <main
-      style={{ backgroundColor: bg, color: text }}
-      className="min-h-screen p-8 flex flex-col items-center justify-center"
-    >
+    <ColouredMain>
       <div className="max-w-[90%] mx-auto">
-        <table className="w-full">
-          <tbody>
-            <tr>
-              <td className="w-1/4 text-center">
-                <RandomImage
-                  width={150}
-                  height={150}
-                  className="w-auto h-auto"
-                />
-              </td>
-              <td className="w-1/2">
-                <div className="font-comic italic">
-                  <strong>
-                    {getServerTranslation("recipe")} <br />
-                    {recipe.title}
-                  </strong>
-                </div>
-              </td>
-              <td className="w-1/4 text-center">
-                <RandomImage
-                  width={150}
-                  height={150}
-                  className="w-auto h-auto"
-                />
-              </td>
-            </tr>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="hidden md:flex items-center justify-center w-[150px]">
+            <RandomImage width={150} height={150} className="object-contain" />
+          </div>
+          <div className="text-center flex-1">
+            <div className="font-comic italic">
+              <strong>
+                {getServerTranslation("recipe")} <br />
+                {recipe.title}
+              </strong>
+            </div>
+          </div>
+          <div className="hidden md:flex items-center justify-center w-[150px]">
+            <RandomImage width={150} height={150} className="object-contain" />
+          </div>
+        </div>
 
-            <tr>
-              <td className="w-1/4 text-center">
-                <RandomImage
-                  width={150}
-                  height={150}
-                  className="w-auto h-auto"
-                />
-              </td>
-              <td>
-                <div className="space-y-6 font-comic">
-                  <div>
-                    <div className="italic">
-                      {getServerTranslation("category")}
-                    </div>
-                    <div className="text-sm">{recipe.category}</div>
-                  </div>
+        <div className="flex flex-col md:flex-row mt-12 gap-8">
+          <div className="hidden md:flex md:w-[150px] items-start justify-center">
+            <RandomImage width={150} height={150} className="object-contain" />
+          </div>
+          <div className="flex-1 space-y-6 font-comic">
+            <div>
+              <div className="italic">{getServerTranslation("category")}</div>
+              <div className="text-sm">{recipe.category}</div>
+            </div>
 
-                  <div>
-                    <div className="text-lg italic">
-                      {getServerTranslation("ingredients")}
-                    </div>
-                    <div className="text-sm whitespace-pre-wrap">
-                      {recipe.ingredients}
-                    </div>
-                  </div>
+            <div>
+              <div className="text-lg italic">
+                {getServerTranslation("ingredients")}
+              </div>
+              <div className="text-sm whitespace-pre-wrap">
+                {recipe.ingredients}
+              </div>
+            </div>
 
-                  <div>
-                    <div className="text-lg italic">
-                      {getServerTranslation("preparation")}
-                    </div>
-                    <div className="text-sm whitespace-pre-wrap">
-                      {recipe.instructions}
-                    </div>
-                  </div>
+            <div>
+              <div className="text-lg italic">
+                {getServerTranslation("preparation")}
+              </div>
+              <div className="text-sm whitespace-pre-wrap">
+                {recipe.instructions}
+              </div>
+            </div>
 
-                  <div>
-                    <div className="text-lg italic">
-                      {getServerTranslation("lastUpdate")}
-                    </div>
-                    <div className="text-xs">
-                      {new Date(recipe.createdAt).toLocaleDateString(
-                        recipe.language === "ja"
-                          ? "ja-JP"
-                          : recipe.language === "it"
-                          ? "it-IT"
-                          : "en-GB"
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </td>
-              <td className="w-1/4 text-center">
-                <RandomImage
-                  width={150}
-                  height={150}
-                  className="w-auto h-auto"
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            <div>
+              <div className="text-lg italic">
+                {getServerTranslation("lastUpdate")}
+              </div>
+              <div className="text-s">
+                {new Date(recipe.modifiedAt).toLocaleDateString()}
+              </div>
+            </div>
+          </div>
+          <div className="hidden md:flex md:w-[150px] items-start justify-center">
+            <RandomImage width={150} height={150} className="object-contain" />
+          </div>
+        </div>
 
-        <table className="w-[800px] mx-auto mt-8">
+        <table className="w-full mx-auto mt-8">
           <tbody>
             <tr>
               <td className="text-center">
@@ -154,7 +101,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
               <td className="text-center">
                 <Link
                   href="/search/form"
-                  className="font-comic text-lg underline"
+                  className="font-comic text-lg underline hover:text-orange-800"
                 >
                   {getServerTranslation("searchPage")}
                 </Link>
@@ -163,6 +110,6 @@ export default async function RecipePage({ params }: RecipePageProps) {
           </tbody>
         </table>
       </div>
-    </main>
+    </ColouredMain>
   );
 }

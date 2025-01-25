@@ -1,22 +1,20 @@
 "use client";
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface BackToSearchLinkProps {
   text: string;
 }
 
 export function BackToSearchLink({ text }: BackToSearchLinkProps) {
-  const searchParams = useSearchParams();
-  const params = new URLSearchParams(searchParams?.toString());
+  const router = useRouter();
 
   return (
-    <Link
-      href={`/search?${params.toString()}`}
-      className="font-comic text-lg underline"
+    <span
+      className="font-comic text-lg underline cursor-pointer"
+      onClick={() => router.back()}
     >
       {text}
-    </Link>
+    </span>
   );
 }
