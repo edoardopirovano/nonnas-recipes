@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Language } from "@/entities/Recipe";
+import { useCookies } from "next-client-cookies";
 
 interface LanguageContextType {
   language: Language;
@@ -19,17 +20,20 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [language, setLanguage] = useState<Language>("en");
+  const cookies = useCookies();
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem("language") as Language;
+    const savedLanguage = cookies.get("language") as Language;
     if (savedLanguage) {
       setLanguage(savedLanguage);
     }
-  }, []);
+  }, [cookies]);
 
   const handleSetLanguage = (lang: Language) => {
     setLanguage(lang);
-    localStorage.setItem("language", lang);
+    cookies.set("language", lang, {
+      expires: 365,
+    });
   };
 
   return (
