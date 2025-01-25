@@ -7,7 +7,7 @@ custom_image = (
 
 app = modal.App("nonnas-recipes")
 
-@app.function(schedule=modal.Period(minutes=15), concurrency_limit=1, timeout=800, image=custom_image, secrets=[modal.Secret.from_name("azure-translation-key"), modal.Secret.from_name("database-url")])
+@app.function(schedule=modal.Period(minutes=5), concurrency_limit=1, timeout=180, image=custom_image, secrets=[modal.Secret.from_name("azure-translation-key"), modal.Secret.from_name("database-url")])
 def translate():
     import os
     import psycopg2
@@ -25,7 +25,7 @@ def translate():
         WHERE (r1."lastTranslatedAt" IS NULL OR r1."lastTranslatedAt" < r1."modifiedAt")
         AND r1."translateTo" IS NOT NULL
         AND r1."translatedFromId" IS NULL
-        LIMIT 100
+        LIMIT 200
         """
         cur.execute(query)
         recipes = cur.fetchall()
@@ -40,28 +40,39 @@ def translate():
             'Content-type': 'application/json'
         }
         
+        recipes_by_language = {}
         for recipe in recipes:
-            id, category, title, ingredients, instructions, source_lang, target_langs = recipe
-            target_langs = target_langs.split(',')
-
-            delete_query = """
-            DELETE FROM recipe
-            WHERE "translatedFromId" = %s
-            """
-            cur.execute(delete_query, (id,))
-            
-            for target_lang in target_langs:
-                texts = [
-                    {'text': category},
-                    {'text': title},
-                    {'text': ingredients},
-                    {'text': instructions}
-                ]
+            source_lang = recipe[5]
+            target_langs = set(recipe[6].split(','))
+            key = (source_lang, tuple(sorted(target_langs)))
+            if key not in recipes_by_language:
+                recipes_by_language[key] = []
+            recipes_by_language[key].append(recipe)
+        
+        for (source_lang, target_langs), lang_recipes in recipes_by_language.items():
+            for i in range(0, len(lang_recipes), 10):
+                batch = lang_recipes[i:i+10]
+                
+                batch_ids = [recipe[0] for recipe in batch]
+                delete_query = """
+                DELETE FROM recipe
+                WHERE "translatedFromId" = ANY(%s)
+                """
+                cur.execute(delete_query, (batch_ids,))
+                
+                texts = []
+                for _, category, title, ingredients, instructions, _, _ in batch:
+                    texts.extend([
+                        {'text': category},
+                        {'text': title},
+                        {'text': ingredients},
+                        {'text': instructions}
+                    ])
                 
                 params = {
                     'api-version': '3.0',
                     'from': source_lang,
-                    'to': target_lang
+                    'to': list(target_langs)
                 }
                 
                 time.sleep(2)
@@ -74,29 +85,37 @@ def translate():
                 response.raise_for_status()
                 translations = response.json()
                 
-                insert_query = """
-                INSERT INTO recipe 
-                (category, title, ingredients, instructions, language, "translatedFromId")
-                VALUES (%s, %s, %s, %s, %s, %s)
-                """
+                for recipe_idx, (id, _, _, _, _, _, target_langs) in enumerate(batch):
+                    target_langs = target_langs.split(',')
+                    base_idx = recipe_idx * 4
+                    
+                    for target_lang in target_langs:
+                        lang_idx = params['to'].index(target_lang)
+                        
+                        insert_query = """
+                        INSERT INTO recipe 
+                        (category, title, ingredients, instructions, language, "translatedFromId")
+                        VALUES (%s, %s, %s, %s, %s, %s)
+                        """
+                        
+                        cur.execute(insert_query, (
+                            translations[base_idx]['translations'][lang_idx]['text'],
+                            translations[base_idx + 1]['translations'][lang_idx]['text'],
+                            translations[base_idx + 2]['translations'][lang_idx]['text'],
+                            translations[base_idx + 3]['translations'][lang_idx]['text'],
+                            target_lang,
+                            id
+                        ))
+                        print(f"Translated recipe {id} from {source_lang} to {target_lang}")
+                    
+                    update_query = """
+                    UPDATE recipe 
+                    SET "lastTranslatedAt" = %s
+                    WHERE id = %s
+                    """
+                    cur.execute(update_query, (datetime.now(), id))
                 
-                cur.execute(insert_query, (
-                    translations[0]['translations'][0]['text'],
-                    translations[1]['translations'][0]['text'],
-                    translations[2]['translations'][0]['text'],
-                    translations[3]['translations'][0]['text'],
-                    target_lang,
-                    id
-                ))
-                print(f"Translated recipe {id} from {source_lang} to {target_lang}")
-                
-            update_query = """
-            UPDATE recipe 
-            SET "lastTranslatedAt" = %s
-            WHERE id = %s
-            """
-            cur.execute(update_query, (datetime.now(), id))
-            conn.commit()
+                conn.commit()
 
         cur.close()
         conn.close()

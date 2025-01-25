@@ -1,10 +1,10 @@
 import { SearchForm } from "../../../components/SearchForm";
-import { RandomImage } from "@/components/RandomImage";
 import { AppDataSource } from "../../../lib/db";
 import { Language, Recipe } from "../../../entities/Recipe";
 import { initDb } from "../../../lib/db";
 import Link from "next/link";
 import { getServerTranslation } from "@/utils/serverTranslation";
+import { ImageGrid } from "@/components/ImageGrid";
 
 export default async function SearchFormPage() {
   await initDb();
@@ -36,21 +36,7 @@ export default async function SearchFormPage() {
       >
         ← {getServerTranslation("backToHome")}
       </Link>
-      {/* Image Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 max-w-[800px] mx-auto">
-        <div className="text-center md:block">
-          <RandomImage width={150} height={150} className="w-[150px] h-auto" />
-        </div>
-        <div className="text-center md:block">
-          <RandomImage width={150} height={150} className="w-[150px] h-auto" />
-        </div>
-        <div className="text-center hidden md:block">
-          <RandomImage width={150} height={150} className="w-[150px] h-auto" />
-        </div>
-        <div className="text-center hidden md:block">
-          <RandomImage width={150} height={150} className="w-[150px] h-auto" />
-        </div>
-      </div>
+      <ImageGrid />
 
       <div className="max-w-[800px] mx-auto">
         <div className="bg-black text-[antiquewhite] text-center p-2 font-comic text-lg">

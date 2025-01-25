@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { RandomImage } from "@/components/RandomImage";
 import { DigitDisplay } from "@/components/DigitDisplay";
+import { ImageGrid } from "@/components/ImageGrid";
 import Profile from "./profile/profile";
 import { useTrackVisitor } from "@/hooks/useTrackVisitor";
 import { gql } from "@apollo/client";
@@ -31,12 +31,7 @@ export default function Home() {
         <LanguageSelector />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 max-w-4xl">
-        <RandomImage width={150} height={150} className="w-full h-auto" />
-        <RandomImage width={150} height={150} className="w-full h-auto" />
-        <RandomImage width={150} height={150} className="w-full h-auto" />
-        <RandomImage width={150} height={150} className="w-full h-auto" />
-      </div>
+      <ImageGrid />
 
       <div className="max-w-4xl text-center mb-8">
         <h1 className="text-4xl font-bold text-red-600 mb-6 font-comic">
