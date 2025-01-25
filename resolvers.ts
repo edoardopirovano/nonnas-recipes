@@ -1,8 +1,6 @@
 import { AppDataSource } from "./lib/db";
 import { Language, Recipe } from "./entities/Recipe";
-import { decode } from "html-entities";
 import { ILike, FindOptionsWhere } from "typeorm";
-import he from "he";
 import { Visitors } from "./entities/Visitors";
 import { trackVisitor } from "./lib/visitors";
 import { LocationData } from "./types/locationData.types";
@@ -24,18 +22,10 @@ export const resolvers = {
       const recipeRepository = AppDataSource.getRepository(Recipe);
 
       const whereClause: FindOptionsWhere<Recipe> = {};
-      if (args.title)
-        whereClause.title = ILike(
-          `%${he.encode(args.title, { decimal: true })}%`
-        );
-      if (args.category)
-        whereClause.category = ILike(
-          `%${he.encode(args.category, { decimal: true })}%`
-        );
+      if (args.title) whereClause.title = ILike(`%${args.title}%`);
+      if (args.category) whereClause.category = ILike(`%${args.category}%`);
       if (args.ingredients)
-        whereClause.ingredients = ILike(
-          `%${he.encode(args.ingredients, { decimal: true })}%`
-        );
+        whereClause.ingredients = ILike(`%${args.ingredients}%`);
       if (args.language) whereClause.language = args.language as Language;
 
       const recipes = await recipeRepository.find({
@@ -47,9 +37,9 @@ export const resolvers = {
 
       return recipes.map((recipe) => ({
         ...recipe,
-        title: decode(recipe.title),
-        ingredients: decode(recipe.ingredients),
-        instructions: decode(recipe.instructions),
+        title: recipe.title,
+        ingredients: recipe.ingredients,
+        instructions: recipe.instructions,
       }));
     },
     stats: async () => {

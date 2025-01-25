@@ -143,10 +143,10 @@ def decode_html_entities():
                 """
                 
                 cur.execute(update_query, (
-                    html.unescape(category) if category else None,
-                    html.unescape(title) if title else None,
-                    html.unescape(ingredients) if ingredients else None,
-                    html.unescape(instructions) if instructions else None,
+                    html.unescape(category) if category else "",
+                    html.unescape(title) if title else "",
+                    html.unescape(ingredients) if ingredients else "",
+                    html.unescape(instructions) if instructions else "",
                     id
                 ))
                 print(f"Decoded HTML entities in recipe {id}")

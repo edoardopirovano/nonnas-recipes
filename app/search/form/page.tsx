@@ -1,13 +1,10 @@
 import { SearchForm } from "../../../components/SearchForm";
 import { RandomImage } from "@/components/RandomImage";
 import { AppDataSource } from "../../../lib/db";
-import { Recipe } from "../../../entities/Recipe";
+import { Language, Recipe } from "../../../entities/Recipe";
 import { initDb } from "../../../lib/db";
 import Link from "next/link";
-import {
-  getServerLanguage,
-  getServerTranslation,
-} from "@/utils/serverTranslation";
+import { getServerTranslation } from "@/utils/serverTranslation";
 
 export default async function SearchFormPage() {
   await initDb();
@@ -18,13 +15,15 @@ export default async function SearchFormPage() {
     .getRawMany();
 
   const categories = [
-    {
-      id: 1,
-      name: getServerTranslation("allCategories"),
-      language: getServerLanguage(),
-    },
+    ...["en", "it", "ja"].map((language, index) => ({
+      id: index + 1,
+      name: getServerTranslation("allCategories", {
+        language: language as Language,
+      }),
+      language,
+    })),
     ...categoriesQuery.map((cat, index) => ({
-      id: index + 2,
+      id: index + 100,
       name: cat.category.toLowerCase(),
       language: cat.language.toLowerCase(),
     })),

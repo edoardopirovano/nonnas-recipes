@@ -3,7 +3,6 @@ import { Recipe } from "../../../entities/Recipe";
 import { notFound } from "next/navigation";
 import { getServerTranslation } from "@/utils/serverTranslation";
 import { RandomImage } from "@/components/RandomImage";
-import he from "he";
 import { BackToSearchLink } from "@/components/BackToSearchLink";
 import { Link } from "lucide-react";
 
@@ -71,7 +70,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
                 <div className="font-comic italic">
                   <strong>
                     {getServerTranslation("recipe")} <br />
-                    {he.decode(recipe.title)}
+                    {recipe.title}
                   </strong>
                 </div>
               </td>
@@ -98,7 +97,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
                     <div className="italic">
                       {getServerTranslation("category")}
                     </div>
-                    <div className="text-sm">{he.decode(recipe.category)}</div>
+                    <div className="text-sm">{recipe.category}</div>
                   </div>
 
                   <div>
@@ -106,7 +105,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
                       {getServerTranslation("ingredients")}
                     </div>
                     <div className="text-sm whitespace-pre-wrap">
-                      {he.decode(recipe.ingredients)}
+                      {recipe.ingredients}
                     </div>
                   </div>
 
@@ -115,7 +114,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
                       {getServerTranslation("preparation")}
                     </div>
                     <div className="text-sm whitespace-pre-wrap">
-                      {he.decode(recipe.instructions)}
+                      {recipe.instructions}
                     </div>
                   </div>
 

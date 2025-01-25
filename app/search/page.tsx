@@ -1,7 +1,6 @@
 import { AppDataSource } from "../../lib/db";
 import { Language, Recipe } from "../../entities/Recipe";
 import { Like, FindOptionsWhere } from "typeorm";
-import he from "he";
 import { initDb } from "../../lib/db";
 import { PaginationControls } from "@/components/PaginationControls";
 import Link from "next/link";
@@ -25,18 +24,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const currentPage = parseInt(page);
 
   const whereClause: FindOptionsWhere<Recipe> = {};
-  if (title)
-    whereClause.title = Like(
-      `%${he.encode(decodeURIComponent(title), { decimal: true })}%`
-    );
+  if (title) whereClause.title = Like(`%${decodeURIComponent(title)}%`);
   if (category)
-    whereClause.category = Like(
-      `%${he.encode(decodeURIComponent(category), { decimal: true })}%`
-    );
+    whereClause.category = Like(`%${decodeURIComponent(category)}%`);
   if (ingredients)
-    whereClause.ingredients = Like(
-      `%${he.encode(decodeURIComponent(ingredients), { decimal: true })}%`
-    );
+    whereClause.ingredients = Like(`%${decodeURIComponent(ingredients)}%`);
   if (language) whereClause.language = language as Language;
   console.log(whereClause);
 
@@ -104,19 +96,19 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               <tr key={recipe.id}>
                 <td className="bg-[moccasin] p-2 align-top border border-gray-400">
                   <span className="font-['Comic_Sans_MS'] text-black text-sm">
-                    {he.decode(recipe.category.toLowerCase())}
+                    {recipe.category.toLowerCase()}
                   </span>
                 </td>
                 <td className="bg-[moccasin] p-2 align-top border border-gray-400">
                   <Link href={`/recipe/${recipe.id}`}>
                     <span className="font-['Comic_Sans_MS'] text-blue-600 text-sm underline">
-                      {he.decode(recipe.title)}
+                      {recipe.title}
                     </span>
                   </Link>
                 </td>
                 <td className="bg-[moccasin] p-2 align-top border border-gray-400">
                   <span className="font-['Comic_Sans_MS'] text-[saddlebrown] text-sm whitespace-pre-line">
-                    {he.decode(recipe.ingredients)}
+                    {recipe.ingredients}
                   </span>
                 </td>
               </tr>
