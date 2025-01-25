@@ -3,11 +3,10 @@ import { Recipe } from "../../../entities/Recipe";
 import { notFound } from "next/navigation";
 import { RecipeView } from "@/components/RecipeView";
 
-export interface RecipePageProps {
+interface RecipePageProps {
   params: {
     id: string;
   };
-  recipe: Recipe;
 }
 
 export default async function RecipePage({ params }: RecipePageProps) {
