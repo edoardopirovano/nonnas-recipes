@@ -30,11 +30,15 @@ export const LanguageProvider: React.FC<{
     }
   }, [cookies]);
 
-  const handleSetLanguage = (lang: Language) => {
-    setLanguage(lang);
-    cookies.set("language", lang, {
+  useEffect(() => {
+    // Refresh the cookie expiration date whenever language changes or is accessed
+    cookies.set("language", language, {
       expires: 365,
     });
+  }, [language, cookies]);
+
+  const handleSetLanguage = (lang: Language) => {
+    setLanguage(lang);
   };
 
   return (

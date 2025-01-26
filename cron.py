@@ -21,7 +21,7 @@ def translate():
         
         query = """
         (
-            SELECT id, category, title, ingredients, instructions, language, "translateTo", "createdById"
+            SELECT id, category, title, ingredients, instructions, language, "translateTo", "createdById", "modifiedAt", "createdAt"
             FROM recipe
             WHERE ("lastTranslatedAt" IS NULL OR "lastTranslatedAt" < "modifiedAt")
                 AND "translateTo" IS NOT NULL
@@ -29,7 +29,7 @@ def translate():
             ORDER BY "modifiedAt" ASC
             LIMIT 99
         ) UNION (
-            SELECT id, category, title, ingredients, instructions, language, "translateTo", "createdById"
+            SELECT id, category, title, ingredients, instructions, language, "translateTo", "createdById", "modifiedAt", "createdAt"
             FROM recipe
             WHERE "translateTo" IS NOT NULL
                 AND "translatedFromId" IS NULL
@@ -96,7 +96,7 @@ def translate():
                 response.raise_for_status()
                 translations = response.json()
                 
-                for recipe_idx, (id, _, _, _, _, _, target_langs, created_by_id) in enumerate(batch):
+                for recipe_idx, (id, _, _, _, _, _, target_langs, created_by_id, modified_at, created_at) in enumerate(batch):
                     target_langs = target_langs.split(',')
                     base_idx = recipe_idx * 4
                     
@@ -105,8 +105,8 @@ def translate():
                         
                         insert_query = """
                         INSERT INTO recipe 
-                        (category, title, ingredients, instructions, language, "translatedFromId", "createdById")
-                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                        (category, title, ingredients, instructions, language, "translatedFromId", "createdById", "modifiedAt", "createdAt")
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """
                         
                         cur.execute(insert_query, (
@@ -116,7 +116,9 @@ def translate():
                             translations[base_idx + 3]['translations'][lang_idx]['text'],
                             target_lang,
                             id,
-                            created_by_id
+                            created_by_id,
+                            modified_at,
+                            created_at
                         ))
                         print(f"Translated recipe {id} from {source_lang} to {target_lang}")
                     
