@@ -143,10 +143,12 @@ export default async function RecipePage({
                   {getServerTranslation("searchPage")}
                 </Link>
               </td>
-              {user?.isAdmin && !recipe.translatedFrom && (
+              {user?.isAdmin && (
                 <td className="text-center">
                   <Link
-                    href={`/recipe/${recipe.id}/edit?${queryString}`}
+                    href={`/recipe/${
+                      recipe.translatedFrom?.id ?? recipe.id
+                    }/edit?${queryString}`}
                     className="font-comic text-lg underline hover:text-orange-800"
                   >
                     {getServerTranslation("edit")}
