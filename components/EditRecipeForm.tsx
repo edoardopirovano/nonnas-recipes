@@ -3,9 +3,10 @@
 import { Language } from "@/entities/Recipe";
 import Link from "next/link";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useState } from "react";
 
 interface EditRecipeFormProps {
-  id: number;
+  id?: number;
   title: string;
   ingredients: string;
   instructions: string;
@@ -26,6 +27,7 @@ export function EditRecipeForm({
   searchParams,
 }: EditRecipeFormProps) {
   const { t } = useTranslation();
+  const [categoryMode, setCategoryMode] = useState("existing");
 
   const formatSearchParams = (params: {
     [key: string]: string | string[] | undefined;
@@ -38,27 +40,49 @@ export function EditRecipeForm({
 
   const queryString = formatSearchParams(searchParams);
 
+  const handleDelete = async () => {
+    if (!id || !window.confirm(t("deleteConfirmation"))) return;
+
+    const response = await fetch(`/api/recipes/${id}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      window.location.href = `/search/form?${queryString}`;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    const categoryMode = formData.get("categoryMode");
 
-    const updatedRecipe = {
-      category: formData.get("category"),
+    const recipeData = {
+      category:
+        categoryMode === "existing"
+          ? formData.get("existingCategory")
+          : formData.get("newCategory"),
       title: formData.get("title"),
       ingredients: formData.get("ingredients"),
       instructions: formData.get("instructions"),
       language: language,
     };
 
-    await fetch(`/api/recipes/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedRecipe),
-    });
+    const response = await fetch(
+      id ? `/api/recipes/${id}` : "/api/recipes/new",
+      {
+        method: id ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(recipeData),
+      }
+    );
 
-    window.location.href = `/recipe/${id}?${queryString}`;
+    const data = await response.json();
+    if (response.ok) {
+      window.location.href = `/recipe/${id || data.id}?${queryString}`;
+    }
   };
 
   return (
@@ -67,17 +91,66 @@ export function EditRecipeForm({
         <div className="flex-1 space-y-6 font-comic">
           <div>
             <div className="italic">{t("category")}</div>
-            <select
-              name="category"
-              defaultValue={category}
-              className="w-full p-2 border border-gray-300 rounded font-comic"
-            >
-              {categories.map((c, i) => (
-                <option key={i} value={c} selected={c === category}>
-                  {c}
-                </option>
-              ))}
-            </select>
+            <div className="space-y-2">
+              <div className="flex gap-4">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="categoryMode"
+                    value="existing"
+                    defaultChecked={true}
+                    onChange={(e) => {
+                      if (e.currentTarget.checked) {
+                        setCategoryMode("existing");
+                      }
+                    }}
+                    className="mr-2"
+                  />
+                  {t("existingCategory")}
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="categoryMode"
+                    value="new"
+                    onChange={(e) => {
+                      if (e.currentTarget.checked) {
+                        setCategoryMode("new");
+                      }
+                    }}
+                    className="mr-2"
+                  />
+                  {t("newCategory")}
+                </label>
+              </div>
+              <div className="category-inputs">
+                <select
+                  name="existingCategory"
+                  defaultValue={
+                    categories.includes(category) ? category : categories[0]
+                  }
+                  className="w-full p-2 border border-gray-300 rounded font-comic"
+                  style={{
+                    display: categoryMode === "existing" ? "block" : "none",
+                  }}
+                >
+                  {categories.map((c, i) => (
+                    <option key={i} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  name="newCategory"
+                  defaultValue={!categories.includes(category) ? category : ""}
+                  className="w-full p-2 border border-gray-300 rounded font-comic"
+                  style={{
+                    display: categoryMode === "new" ? "block" : "none",
+                  }}
+                />
+              </div>
+            </div>
           </div>
 
           <div>
@@ -117,12 +190,23 @@ export function EditRecipeForm({
           <tr>
             <td className="text-center">
               <Link
-                href={`/recipe/${id}?${queryString}`}
+                href={id ? `/recipe/${id}?${queryString}` : "/search/form"}
                 className="font-comic text-lg underline hover:text-orange-800"
               >
                 {t("cancel")}
               </Link>
             </td>
+            {id && (
+              <td className="text-center">
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  className="font-comic text-lg underline hover:text-orange-800 text-red-600"
+                >
+                  {t("delete")}
+                </button>
+              </td>
+            )}
             <td className="text-center">
               <button
                 type="submit"

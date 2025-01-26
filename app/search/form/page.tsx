@@ -8,6 +8,7 @@ import {
   getServerTranslation,
 } from "@/utils/serverTranslation";
 import { ImageGrid } from "@/components/ImageGrid";
+import { getSession } from "@auth0/nextjs-auth0";
 
 export default async function SearchFormPage() {
   await initDb();
@@ -22,6 +23,14 @@ export default async function SearchFormPage() {
     getServerTranslation("allCategories").toLowerCase(),
     ...categoriesQuery.map((cat) => cat.category.toLowerCase()),
   ];
+
+  const session = await getSession();
+  const user = session?.user?.sub
+    ? await AppDataSource.getRepository("user").findOne({
+        where: { id: session.user.sub },
+      })
+    : null;
+
   return (
     <main className="min-h-screen p-8 bg-[palegoldenrod]">
       <Link
@@ -38,6 +47,17 @@ export default async function SearchFormPage() {
         </div>
         <SearchForm categories={categories} />
       </div>
+
+      {user?.isAdmin && (
+        <div className="w-full max-w-[800px] mx-auto mb-4 text-center">
+          <Link
+            href="/recipe/new"
+            className="inline-block px-6 py-2 text-lg bg-[#f4d03f] text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all font-comic"
+          >
+            + {getServerTranslation("newRecipe")}
+          </Link>
+        </div>
+      )}
     </main>
   );
 }

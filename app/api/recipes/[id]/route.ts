@@ -61,3 +61,59 @@ export async function PUT(
     );
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    await initDb();
+
+    const session = await getSession();
+    if (!session?.user?.sub) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await AppDataSource.getRepository("user").findOne({
+      where: { id: session.user.sub },
+    });
+
+    if (!user?.isAdmin) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const recipe = await AppDataSource.getRepository(Recipe).findOne({
+      where: { id: parseInt(params.id) },
+      relations: ["translatedFrom"],
+    });
+
+    if (!recipe) {
+      return NextResponse.json({ error: "Recipe not found" }, { status: 404 });
+    }
+
+    if (recipe.translatedFrom) {
+      return NextResponse.json(
+        { error: "Cannot delete translated recipes" },
+        { status: 403 }
+      );
+    }
+
+    // Delete all translations of this recipe
+    await AppDataSource.getRepository(Recipe).delete({
+      translatedFrom: { id: recipe.id },
+    });
+
+    // Delete the recipe itself
+    await AppDataSource.getRepository(Recipe).delete({
+      id: recipe.id,
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting recipe:", error);
+    return NextResponse.json(
+      { error: "Failed to delete recipe" },
+      { status: 500 }
+    );
+  }
+}

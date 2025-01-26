@@ -66,7 +66,7 @@ export const resolvers = {
         .getRawOne();
 
       const stats = {
-        totalRecipes,
+        totalRecipes: parseInt(totalRecipes?.total || "0"),
         totalViews: parseInt(totalViews?.total || "0"),
         visitorCount: parseInt(visitorCount?.total || "0"),
       };
@@ -89,8 +89,13 @@ export const resolvers = {
         where: { id: session.user.sub },
       });
       if (!user) {
-        await userRepository.save({ id: session.user.sub });
-        return { id: session.user.sub, isAdmin: false };
+        const newUser = {
+          id: session.user.sub,
+          email: session.user.email,
+          isAdmin: false,
+        };
+        await userRepository.save(newUser);
+        return newUser;
       }
       return user;
     },

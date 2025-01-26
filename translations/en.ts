@@ -44,7 +44,12 @@ export const translations = {
   save: "Save changes",
   cancel: "Cancel",
   editRecipe: "Edit Recipe",
-  editingRecipe: "Editing recipe:",
+  editingRecipe: "Editing recipe",
+  newRecipe: "New recipe",
+  delete: "Delete",
+  deleteConfirmation: "Are you sure you want to delete this recipe?",
+  existingCategory: "Choose existing category",
+  newCategory: "Create new category",
 };
 
 export type TranslationKeys = keyof typeof translations;

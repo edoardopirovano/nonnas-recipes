@@ -45,6 +45,11 @@ export const translations = {
   cancel: "Annulla",
   editRecipe: "Modifica Ricetta",
   editingRecipe: "Modifica della ricetta:",
+  newRecipe: "Nuova ricetta",
+  delete: "Elimina",
+  deleteConfirmation: "Sei sicuro di voler eliminare questa ricetta?",
+  existingCategory: "Scegli una categoria esistente",
+  newCategory: "Crea una nuova categoria",
 };
 
 export type TranslationKeys = keyof typeof translations;

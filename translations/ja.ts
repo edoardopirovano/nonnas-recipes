@@ -45,6 +45,11 @@ export const translations = {
   cancel: "キャンセル",
   editRecipe: "レシピの編集",
   editingRecipe: "編集中のレシピ：",
+  newRecipe: "新しいレシピ",
+  delete: "削除",
+  deleteConfirmation: "このレシピを削除してもよろしいですか？",
+  existingCategory: "既存のカテゴリーを選択",
+  newCategory: "新しいカテゴリーを作成",
 };
 
 export type TranslationKeys = keyof typeof translations;
