@@ -35,7 +35,7 @@ export default async function SearchFormPage() {
 
   const creators = [
     getServerTranslation("allCreators").toLowerCase(),
-    ...creatorsQuery.map((creator) => creator.name.toLowerCase()),
+    ...creatorsQuery,
   ];
 
   const session = await getSession();
