@@ -6,29 +6,53 @@ import { RandomImage } from "@/components/RandomImage";
 import { BackToSearchLink } from "@/components/BackToSearchLink";
 import Link from "next/link";
 import { ColouredMain } from "@/components/ColouredContainer";
+import { getSession } from "@auth0/nextjs-auth0";
 
 interface RecipePageProps {
   params: {
     id: string;
   };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default async function RecipePage({ params }: RecipePageProps) {
+export default async function RecipePage({
+  params,
+  searchParams,
+}: RecipePageProps) {
   await initDb();
 
   const recipe = await AppDataSource.getRepository(Recipe).findOne({
     where: { id: parseInt(params.id) },
+    relations: ["translatedFrom"],
   });
 
   if (!recipe) {
     notFound();
   }
 
+  const session = await getSession();
+  const user = session?.user?.sub
+    ? await AppDataSource.getRepository("user").findOne({
+        where: { id: session.user.sub },
+      })
+    : null;
+
   await AppDataSource.getRepository(Recipe).increment(
     { id: recipe.id },
     "views",
     1
   );
+
+  const formatSearchParams = (params: {
+    [key: string]: string | string[] | undefined;
+  }) => {
+    return Object.entries(params)
+      .filter(([key, value]) => value !== undefined && key !== "from")
+      .map(([key, value]) => `${key}=${value}`)
+      .join("&");
+  };
+
+  const queryString = formatSearchParams(searchParams);
 
   return (
     <ColouredMain>
@@ -95,9 +119,14 @@ export default async function RecipePage({ params }: RecipePageProps) {
         <table className="w-full mx-auto mt-8">
           <tbody>
             <tr>
-              <td className="text-center">
-                <BackToSearchLink text={getServerTranslation("backToSearch")} />
-              </td>
+              {queryString && (
+                <td className="text-center">
+                  <BackToSearchLink
+                    text={getServerTranslation("backToSearch")}
+                    searchParams={queryString}
+                  />
+                </td>
+              )}
               <td className="text-center">
                 <Link
                   href="/search/form"
@@ -106,6 +135,16 @@ export default async function RecipePage({ params }: RecipePageProps) {
                   {getServerTranslation("searchPage")}
                 </Link>
               </td>
+              {user?.isAdmin && !recipe.translatedFrom && (
+                <td className="text-center">
+                  <Link
+                    href={`/recipe/${recipe.id}/edit?${queryString}`}
+                    className="font-comic text-lg underline hover:text-orange-800"
+                  >
+                    {getServerTranslation("edit")}
+                  </Link>
+                </td>
+              )}
             </tr>
           </tbody>
         </table>

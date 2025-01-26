@@ -20,12 +20,23 @@ def translate():
         cur = conn.cursor()
         
         query = """
-        SELECT r1.id, r1.category, r1.title, r1.ingredients, r1.instructions, r1.language, r1."translateTo"
-        FROM recipe r1
-        WHERE (r1."lastTranslatedAt" IS NULL OR r1."lastTranslatedAt" < r1."modifiedAt")
-        AND r1."translateTo" IS NOT NULL
-        AND r1."translatedFromId" IS NULL
-        LIMIT 100
+        (
+            SELECT id, category, title, ingredients, instructions, language, "translateTo"
+            FROM recipe
+            WHERE ("lastTranslatedAt" IS NULL OR "lastTranslatedAt" < "modifiedAt")
+                AND "translateTo" IS NOT NULL
+                AND "translatedFromId" IS NULL
+            ORDER BY "modifiedAt" ASC
+            LIMIT 99
+        ) UNION (
+            SELECT id, category, title, ingredients, instructions, language, "translateTo"
+            FROM recipe
+            WHERE "translateTo" IS NOT NULL
+                AND "translatedFromId" IS NULL
+                AND "lastTranslatedAt" IS NOT NULL
+            ORDER BY "lastTranslatedAt" ASC
+            LIMIT 1
+        )
         """
         cur.execute(query)
         recipes = cur.fetchall()

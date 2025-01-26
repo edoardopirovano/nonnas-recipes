@@ -1,32 +1,26 @@
 import { SearchForm } from "../../../components/SearchForm";
 import { AppDataSource } from "../../../lib/db";
-import { Language, Recipe } from "../../../entities/Recipe";
+import { Recipe } from "../../../entities/Recipe";
 import { initDb } from "../../../lib/db";
 import Link from "next/link";
-import { getServerTranslation } from "@/utils/serverTranslation";
+import {
+  getServerLanguage,
+  getServerTranslation,
+} from "@/utils/serverTranslation";
 import { ImageGrid } from "@/components/ImageGrid";
 
 export default async function SearchFormPage() {
   await initDb();
   const categoriesQuery = await AppDataSource.getRepository(Recipe)
     .createQueryBuilder("recipe")
-    .select("DISTINCT category, language")
+    .select("DISTINCT category")
+    .where("language = :language", { language: getServerLanguage() })
     .orderBy("category", "ASC")
     .getRawMany();
 
   const categories = [
-    ...["en", "it", "ja"].map((language, index) => ({
-      id: index + 1,
-      name: getServerTranslation("allCategories", {
-        language: language as Language,
-      }).toLowerCase(),
-      language,
-    })),
-    ...categoriesQuery.map((cat, index) => ({
-      id: index + 100,
-      name: cat.category.toLowerCase(),
-      language: cat.language.toLowerCase(),
-    })),
+    getServerTranslation("allCategories").toLowerCase(),
+    ...categoriesQuery.map((cat) => cat.category.toLowerCase()),
   ];
   return (
     <main className="min-h-screen p-8 bg-[palegoldenrod]">

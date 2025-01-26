@@ -93,7 +93,19 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   </span>
                 </td>
                 <td className="bg-[moccasin] p-2 align-top border border-gray-400">
-                  <Link href={`/recipe/${recipe.id}`}>
+                  <Link
+                    href={{
+                      pathname: `/recipe/${recipe.id}`,
+                      query: {
+                        from: "search",
+                        title: searchParams.title,
+                        category: searchParams.category,
+                        ingredients: searchParams.ingredients,
+                        page: searchParams.page,
+                        language: searchParams.language,
+                      },
+                    }}
+                  >
                     <span className="font-['Comic_Sans_MS'] text-blue-600 text-xs sm:text-sm underline break-words">
                       {recipe.title}
                     </span>

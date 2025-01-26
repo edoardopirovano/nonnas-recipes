@@ -40,6 +40,11 @@ export const translations = {
   resultsCategory: "Category",
   resultsTitle: "Title",
   resultsIngredients: "Ingredients",
+  edit: "Edit recipe",
+  save: "Save changes",
+  cancel: "Cancel",
+  editRecipe: "Edit Recipe",
+  editingRecipe: "Editing recipe:",
 };
 
 export type TranslationKeys = keyof typeof translations;

@@ -5,14 +5,8 @@ import { useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTranslation } from "@/hooks/useTranslation";
 
-type Category = {
-  id: number;
-  name: string;
-  language: string;
-};
-
 interface SearchFormProps {
-  categories: Category[];
+  categories: string[];
 }
 
 export function SearchForm({ categories }: SearchFormProps) {
@@ -20,14 +14,11 @@ export function SearchForm({ categories }: SearchFormProps) {
   const { language } = useLanguage();
   const { t } = useTranslation();
 
-  const filteredCategories = categories.filter(
-    (category) => category.language === language
-  );
-  const allCategories = filteredCategories[0];
+  const allCategories = categories[0];
 
   const [filters, setFilters] = useState({
     title: "",
-    category: allCategories.name,
+    category: allCategories,
     ingredients: "",
     language: language,
   });
@@ -36,7 +27,7 @@ export function SearchForm({ categories }: SearchFormProps) {
     e.preventDefault();
     const searchParams = new URLSearchParams();
     Object.entries(filters).forEach(([key, value]) => {
-      if (value && value !== allCategories.name) {
+      if (value && value !== allCategories) {
         searchParams.append(key, encodeURIComponent(value));
       }
     });
@@ -57,9 +48,9 @@ export function SearchForm({ categories }: SearchFormProps) {
           }
           className="w-full p-1"
         >
-          {filteredCategories.map((category) => (
-            <option key={category.id} value={category.name}>
-              {category.name}
+          {categories.map((category, i) => (
+            <option key={i} value={category}>
+              {category}
             </option>
           ))}
         </select>

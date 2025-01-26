@@ -20,8 +20,16 @@ const colourChoices = [
   ["crimson", "ghostwhite"],
 ];
 
-export const ColouredMain = ({ children }: { children: React.ReactNode }) => {
-  const { bg, text } = useMemo(() => {
+export const ColouredMain = ({
+  children,
+  bg,
+  text,
+}: {
+  children: React.ReactNode;
+  bg?: string;
+  text?: string;
+}) => {
+  const { bg: defaultBg, text: defaultText } = useMemo(() => {
     // Wrap this in a useMemo to avoid the colour changing on every render
     const randomIndex = Math.floor(Math.random() * colourChoices.length);
     const [bg, text] = colourChoices[randomIndex];
@@ -30,7 +38,7 @@ export const ColouredMain = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <main
-      style={{ backgroundColor: bg, color: text }}
+      style={{ backgroundColor: bg || defaultBg, color: text || defaultText }}
       className="min-h-screen p-8 flex flex-col items-center justify-center"
     >
       {children}

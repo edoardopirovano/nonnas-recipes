@@ -40,6 +40,11 @@ export const translations = {
   resultsCategory: "カテゴリー",
   resultsTitle: "タイトル",
   resultsIngredients: "材料",
+  edit: "レシピを編集",
+  save: "変更を保存",
+  cancel: "キャンセル",
+  editRecipe: "レシピの編集",
+  editingRecipe: "編集中のレシピ：",
 };
 
 export type TranslationKeys = keyof typeof translations;

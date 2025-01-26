@@ -40,6 +40,11 @@ export const translations = {
   resultsCategory: "Categoria",
   resultsTitle: "Titolo",
   resultsIngredients: "Ingredienti",
+  edit: "Modifica ricetta",
+  save: "Salva modifiche",
+  cancel: "Annulla",
+  editRecipe: "Modifica Ricetta",
+  editingRecipe: "Modifica della ricetta:",
 };
 
 export type TranslationKeys = keyof typeof translations;
