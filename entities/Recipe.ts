@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   ManyToOne,
 } from "typeorm";
+import { User } from "./User";
 
 export type Language = "en" | "it" | "ja";
 
@@ -45,4 +46,7 @@ export class Recipe {
 
   @Column({ type: "timestamp", nullable: true })
   lastTranslatedAt!: Date | null;
+
+  @ManyToOne(() => User, (user) => user.id, { nullable: true })
+  createdBy!: User | null;
 }

@@ -8,6 +8,9 @@ export class User {
   @Column({ type: "text" })
   email!: string;
 
+  @Column({ type: "text", nullable: true })
+  name!: string | null;
+
   @Column({ type: "boolean", default: false })
   isAdmin!: boolean;
 }
