@@ -92,6 +92,7 @@ export const resolvers = {
         const newUser = {
           id: session.user.sub,
           email: session.user.email,
+          name: session.user.name || null,
           isAdmin: false,
         };
         await userRepository.save(newUser);
