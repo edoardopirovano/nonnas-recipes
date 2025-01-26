@@ -166,7 +166,7 @@ export function EditRecipeForm({
           </div>
 
           <div>
-            <div className="italic">{t("recipe")}</div>
+            <div className="italic">{t("title")}</div>
             <input
               type="text"
               name="title"

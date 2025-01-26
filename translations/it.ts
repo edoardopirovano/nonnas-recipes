@@ -55,6 +55,7 @@ export const translations = {
   createdBy: "Creata da:",
   byCreator: "Per autore:",
   allCreators: "Tutti gli autori",
+  title: "Titolo",
 };
 
 export type TranslationKeys = keyof typeof translations;
