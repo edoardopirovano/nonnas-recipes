@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { AppDataSource, initDb } from "@/lib/db";
-import { Language, Recipe } from "@/entities/Recipe";
+import { Recipe } from "@/entities/Recipe";
 import { getSession } from "@auth0/nextjs-auth0";
 
 export async function PUT(
