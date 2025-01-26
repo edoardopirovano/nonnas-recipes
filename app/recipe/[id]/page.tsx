@@ -47,7 +47,6 @@ export default async function RecipePage({
     [key: string]: string | string[] | undefined;
   }) => {
     return Object.entries(params)
-      .filter(([key, value]) => value !== undefined && key !== "from")
       .map(([key, value]) => `${key}=${value}`)
       .join("&");
   };

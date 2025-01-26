@@ -24,6 +24,20 @@ export default async function SearchFormPage() {
     ...categoriesQuery.map((cat) => cat.category.toLowerCase()),
   ];
 
+  const creatorsQuery = await AppDataSource.getRepository(Recipe)
+    .createQueryBuilder("recipe")
+    .leftJoinAndSelect("recipe.createdBy", "user")
+    .select("DISTINCT user.name", "name")
+    .where("recipe.language = :language", { language: getServerLanguage() })
+    .andWhere("user.name IS NOT NULL")
+    .orderBy("user.name", "ASC")
+    .getRawMany();
+
+  const creators = [
+    getServerTranslation("allCreators").toLowerCase(),
+    ...creatorsQuery.map((creator) => creator.name.toLowerCase()),
+  ];
+
   const session = await getSession();
   const user = session?.user?.sub
     ? await AppDataSource.getRepository("user").findOne({
@@ -45,7 +59,7 @@ export default async function SearchFormPage() {
         <div className="bg-black text-[antiquewhite] text-center p-2 font-comic text-lg">
           {getServerTranslation("search")}:
         </div>
-        <SearchForm categories={categories} />
+        <SearchForm categories={categories} creators={creators} />
       </div>
 
       {user?.isAdmin && (

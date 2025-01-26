@@ -13,6 +13,7 @@ interface SearchPageProps {
     ingredients?: string;
     page?: string;
     language?: string;
+    creator?: string;
   };
 }
 
@@ -20,7 +21,14 @@ const ITEMS_PER_PAGE = 15;
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   await initDb();
-  const { title, category, ingredients, page = "1", language } = searchParams;
+  const {
+    title,
+    category,
+    ingredients,
+    page = "1",
+    language,
+    creator,
+  } = searchParams;
   const currentPage = parseInt(page);
 
   const whereClause: FindOptionsWhere<Recipe> = {};
@@ -30,6 +38,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   if (ingredients)
     whereClause.ingredients = ILike(`%${decodeURIComponent(ingredients)}%`);
   if (language) whereClause.language = language as Language;
+  if (creator)
+    whereClause.createdBy = { name: ILike(`%${decodeURIComponent(creator)}%`) };
 
   const [recipes, total] = await AppDataSource.getRepository(
     Recipe
@@ -42,7 +52,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
   await AppDataSource.destroy();
 
-  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+  const totalPages = Math.max(1, Math.ceil(total / ITEMS_PER_PAGE));
 
   return (
     <main className="min-h-screen bg-[lightgrey] p-4 sm:p-8">
@@ -96,14 +106,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   <Link
                     href={{
                       pathname: `/recipe/${recipe.id}`,
-                      query: {
-                        from: "search",
-                        title: searchParams.title,
-                        category: searchParams.category,
-                        ingredients: searchParams.ingredients,
-                        page: searchParams.page,
-                        language: searchParams.language,
-                      },
+                      query: searchParams,
                     }}
                   >
                     <span className="font-['Comic_Sans_MS'] text-blue-600 text-xs sm:text-sm underline break-words">

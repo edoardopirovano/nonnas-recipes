@@ -7,18 +7,21 @@ import { useTranslation } from "@/hooks/useTranslation";
 
 interface SearchFormProps {
   categories: string[];
+  creators: string[];
 }
 
-export function SearchForm({ categories }: SearchFormProps) {
+export function SearchForm({ categories, creators }: SearchFormProps) {
   const router = useRouter();
   const { language } = useLanguage();
   const { t } = useTranslation();
 
   const allCategories = categories[0];
+  const allCreators = creators[0];
 
   const [filters, setFilters] = useState({
     title: "",
     category: allCategories,
+    creator: allCreators,
     ingredients: "",
     language: language,
   });
@@ -27,7 +30,7 @@ export function SearchForm({ categories }: SearchFormProps) {
     e.preventDefault();
     const searchParams = new URLSearchParams();
     Object.entries(filters).forEach(([key, value]) => {
-      if (value && value !== allCategories) {
+      if (value && value !== allCategories && value !== allCreators) {
         searchParams.append(key, encodeURIComponent(value));
       }
     });
@@ -51,6 +54,23 @@ export function SearchForm({ categories }: SearchFormProps) {
           {categories.map((category, i) => (
             <option key={i} value={category}>
               {category}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="flex items-start space-x-4 font-comic text-lg">
+        <div className="whitespace-nowrap">{t("byCreator")}</div>
+        <select
+          value={filters.creator}
+          onChange={(e) =>
+            setFilters((prev) => ({ ...prev, creator: e.target.value }))
+          }
+          className="w-full p-1"
+        >
+          {creators.map((creator, i) => (
+            <option key={i} value={creator}>
+              {creator}
             </option>
           ))}
         </select>
