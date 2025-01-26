@@ -51,7 +51,7 @@ export const translations = {
   existingCategory: "Scegli una categoria esistente",
   newCategory: "Crea una nuova categoria",
   language: "Lingua",
-  createdBy: "Creato da:",
+  createdBy: "Creata da:",
 };
 
 export type TranslationKeys = keyof typeof translations;
