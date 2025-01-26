@@ -21,6 +21,7 @@ export function SearchForm({ categories, creators }: SearchFormProps) {
     category: allCategories,
     creator: allCreators,
     ingredients: "",
+    instructions: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -100,6 +101,21 @@ export function SearchForm({ categories, creators }: SearchFormProps) {
             value={filters.ingredients}
             onChange={(e) =>
               setFilters((prev) => ({ ...prev, ingredients: e.target.value }))
+            }
+            className="w-full p-1"
+            maxLength={120}
+          />
+        </div>
+
+        <div className="flex items-center space-x-4">
+          <div className="bg-black text-[antiquewhite] p-2 font-comic text-lg whitespace-nowrap">
+            {t("inInstructions")}
+          </div>
+          <input
+            type="text"
+            value={filters.instructions}
+            onChange={(e) =>
+              setFilters((prev) => ({ ...prev, instructions: e.target.value }))
             }
             className="w-full p-1"
             maxLength={120}

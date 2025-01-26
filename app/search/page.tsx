@@ -16,6 +16,7 @@ interface SearchPageProps {
     ingredients?: string;
     page?: string;
     creator?: string;
+    instructions?: string;
   };
 }
 
@@ -23,7 +24,14 @@ const ITEMS_PER_PAGE = 15;
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   await initDb();
-  const { title, category, ingredients, page = "1", creator } = searchParams;
+  const {
+    title,
+    category,
+    ingredients,
+    page = "1",
+    creator,
+    instructions,
+  } = searchParams;
   const currentPage = parseInt(page);
 
   const whereClause: FindOptionsWhere<Recipe> = {};
@@ -35,7 +43,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   whereClause.language = getServerLanguage();
   if (creator)
     whereClause.createdBy = { name: ILike(`%${decodeURIComponent(creator)}%`) };
-
+  if (instructions)
+    whereClause.instructions = ILike(`%${decodeURIComponent(instructions)}%`);
   const [recipes, total] = await AppDataSource.getRepository(
     Recipe
   ).findAndCount({

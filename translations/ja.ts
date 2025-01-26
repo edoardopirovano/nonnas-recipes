@@ -13,6 +13,7 @@ export const translations = {
   containsWord: "次の言葉/フレーズを含む：",
   inTitle: "タイトルに：",
   inIngredients: "材料に：",
+  inInstructions: "作り方に：",
   search: "検索",
   recipe: "レシピ：",
   category: "カテゴリー：",
