@@ -50,6 +50,7 @@ export const translations = {
   deleteConfirmation: "Are you sure you want to delete this recipe?",
   existingCategory: "Choose existing category",
   newCategory: "Create new category",
+  language: "Language",
 };
 
 export type TranslationKeys = keyof typeof translations;

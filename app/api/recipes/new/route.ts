@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
 import { AppDataSource, initDb } from "@/lib/db";
-import { Language, Recipe } from "@/entities/Recipe";
+import { Recipe } from "@/entities/Recipe";
 import { getSession } from "@auth0/nextjs-auth0";
-import { getServerLanguage } from "@/utils/serverTranslation";
 
 export async function POST(request: Request) {
   try {
     await initDb();
-
-    const language = getServerLanguage();
 
     const session = await getSession();
     if (!session?.user?.sub) {
@@ -30,13 +27,13 @@ export async function POST(request: Request) {
       title: body.title,
       ingredients: body.ingredients,
       instructions: body.instructions,
-      language,
+      language: body.language,
       modifiedAt: new Date(),
       createdAt: new Date(),
       views: 0,
-      translateTo: ["en", "it", "ja"].filter(
-        (lang) => lang !== language
-      ) as Language[],
+      translateTo: ["en", "it", "ja"]
+        .filter((lang) => lang !== body.language)
+        .join(","),
     });
 
     await AppDataSource.getRepository(Recipe).save(recipe);

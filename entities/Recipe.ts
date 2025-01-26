@@ -38,7 +38,7 @@ export class Recipe {
   language!: Language;
 
   @Column({ type: "text", nullable: true })
-  translateTo!: Language[] | null;
+  translateTo!: string;
 
   @ManyToOne(() => Recipe, (recipe) => recipe.id, { nullable: true })
   translatedFrom!: Recipe | null;

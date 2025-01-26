@@ -65,7 +65,7 @@ export function EditRecipeForm({
       title: formData.get("title"),
       ingredients: formData.get("ingredients"),
       instructions: formData.get("instructions"),
-      language: language,
+      language: formData.get("language") as Language,
     };
 
     const response = await fetch(
@@ -151,6 +151,19 @@ export function EditRecipeForm({
                 />
               </div>
             </div>
+          </div>
+
+          <div>
+            <div className="italic">{t("language")}</div>
+            <select
+              name="language"
+              defaultValue={language}
+              className="w-full p-2 border border-gray-300 rounded font-comic"
+            >
+              <option value="en">English</option>
+              <option value="it">Italiano</option>
+              <option value="ja">日本語</option>
+            </select>
           </div>
 
           <div>

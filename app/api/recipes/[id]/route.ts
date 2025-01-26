@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { AppDataSource, initDb } from "@/lib/db";
-import { Recipe } from "@/entities/Recipe";
+import { Language, Recipe } from "@/entities/Recipe";
 import { getSession } from "@auth0/nextjs-auth0";
 
 export async function PUT(
@@ -48,6 +48,10 @@ export async function PUT(
         title: body.title,
         ingredients: body.ingredients,
         instructions: body.instructions,
+        language: body.language,
+        translateTo: ["en", "it", "ja"]
+          .filter((lang) => lang !== body.language)
+          .join(","),
         modifiedAt: new Date(),
       }
     );
