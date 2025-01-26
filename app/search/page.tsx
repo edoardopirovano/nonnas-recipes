@@ -47,7 +47,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     where: whereClause,
     skip: (currentPage - 1) * ITEMS_PER_PAGE,
     take: ITEMS_PER_PAGE,
-    order: { id: "DESC" },
+    order: { title: "ASC" },
   });
 
   await AppDataSource.destroy();
