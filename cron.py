@@ -72,7 +72,7 @@ def translate():
                 cur.execute(delete_query, (batch_ids,))
                 
                 texts = []
-                for _, category, title, ingredients, instructions, _, _ in batch:
+                for _, category, title, ingredients, instructions, _, _ , _, _, _ in batch:
                     texts.extend([
                         {'text': category},
                         {'text': title},
