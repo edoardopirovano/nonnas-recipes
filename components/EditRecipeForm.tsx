@@ -168,7 +168,7 @@ export function EditRecipeForm({
             <textarea
               name="ingredients"
               defaultValue={ingredients}
-              rows={10}
+              rows={3}
               className="w-full p-2 border border-gray-300 rounded font-comic"
             />
           </div>
@@ -178,7 +178,7 @@ export function EditRecipeForm({
             <textarea
               name="instructions"
               defaultValue={instructions}
-              rows={10}
+              rows={5}
               className="w-full p-2 border border-gray-300 rounded font-comic"
             />
           </div>

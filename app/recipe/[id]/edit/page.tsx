@@ -6,8 +6,6 @@ import {
   getServerLanguage,
   getServerTranslation,
 } from "@/utils/serverTranslation";
-import { RandomImage } from "@/components/RandomImage";
-import { ColouredMain } from "@/components/ColouredContainer";
 import { EditRecipeForm } from "@/components/EditRecipeForm";
 
 interface EditRecipePageProps {
@@ -52,12 +50,9 @@ export default async function EditRecipePage({
   const categories = categoriesQuery.map((cat) => cat.category.toLowerCase());
 
   return (
-    <ColouredMain bg="darkgreen" text="gold">
+    <main className="min-h-screen p-8 bg-[palegoldenrod]">
       <div className="max-w-[90%] mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="hidden md:flex items-center justify-center w-[150px]">
-            <RandomImage width={150} height={150} className="object-contain" />
-          </div>
           <div className="text-center flex-1">
             <div className="font-comic italic">
               <strong>
@@ -65,9 +60,6 @@ export default async function EditRecipePage({
                 {recipe.title}
               </strong>
             </div>
-          </div>
-          <div className="hidden md:flex items-center justify-center w-[150px]">
-            <RandomImage width={150} height={150} className="object-contain" />
           </div>
         </div>
 
@@ -82,6 +74,6 @@ export default async function EditRecipePage({
           searchParams={searchParams}
         />
       </div>
-    </ColouredMain>
+    </main>
   );
 }

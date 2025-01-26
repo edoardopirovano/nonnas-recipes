@@ -43,14 +43,15 @@ const Profile = () => {
   return (
     <div>
       <div className="text-[mediumslateblue] italic mb-4">
-        {t("loggedInAs").replace("{name}", user.name || "")} (
+        {t("loggedInAs").replace("{name}", user.name || "")}
+        {data?.userInfo?.isAdmin && <span> ({t("adminPanel")})</span>} (
         <a
           href="/api/auth/logout"
           className="text-red-600 underline text-center font-comic italic"
         >
           {t("logout")}
         </a>
-        ){data?.userInfo?.isAdmin && <span> ({t("adminPanel")})</span>}
+        )
       </div>
     </div>
   );
