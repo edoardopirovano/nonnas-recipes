@@ -39,6 +39,10 @@ export const LanguageProvider: React.FC<{
 
   const handleSetLanguage = (lang: Language) => {
     setLanguage(lang);
+    cookies.set("language", lang, {
+      expires: 365,
+    });
+    window.location.reload();
   };
 
   return (
