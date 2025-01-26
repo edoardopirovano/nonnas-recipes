@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useLanguage } from "@/contexts/LanguageContext";
 import { useTranslation } from "@/hooks/useTranslation";
 
 interface SearchFormProps {
@@ -12,7 +11,6 @@ interface SearchFormProps {
 
 export function SearchForm({ categories, creators }: SearchFormProps) {
   const router = useRouter();
-  const { language } = useLanguage();
   const { t } = useTranslation();
 
   const allCategories = categories[0];
@@ -23,7 +21,6 @@ export function SearchForm({ categories, creators }: SearchFormProps) {
     category: allCategories,
     creator: allCreators,
     ingredients: "",
-    language: language,
   });
 
   const handleSubmit = (e: React.FormEvent) => {

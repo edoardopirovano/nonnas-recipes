@@ -1,10 +1,13 @@
 import { AppDataSource } from "../../lib/db";
-import { Language, Recipe } from "../../entities/Recipe";
+import { Recipe } from "../../entities/Recipe";
 import { FindOptionsWhere, ILike } from "typeorm";
 import { initDb } from "../../lib/db";
 import { PaginationControls } from "@/components/PaginationControls";
 import Link from "next/link";
-import { getServerTranslation } from "@/utils/serverTranslation";
+import {
+  getServerLanguage,
+  getServerTranslation,
+} from "@/utils/serverTranslation";
 
 interface SearchPageProps {
   searchParams: {
@@ -12,7 +15,6 @@ interface SearchPageProps {
     category?: string;
     ingredients?: string;
     page?: string;
-    language?: string;
     creator?: string;
   };
 }
@@ -21,14 +23,7 @@ const ITEMS_PER_PAGE = 15;
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   await initDb();
-  const {
-    title,
-    category,
-    ingredients,
-    page = "1",
-    language,
-    creator,
-  } = searchParams;
+  const { title, category, ingredients, page = "1", creator } = searchParams;
   const currentPage = parseInt(page);
 
   const whereClause: FindOptionsWhere<Recipe> = {};
@@ -37,7 +32,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     whereClause.category = ILike(`%${decodeURIComponent(category)}%`);
   if (ingredients)
     whereClause.ingredients = ILike(`%${decodeURIComponent(ingredients)}%`);
-  if (language) whereClause.language = language as Language;
+  whereClause.language = getServerLanguage();
   if (creator)
     whereClause.createdBy = { name: ILike(`%${decodeURIComponent(creator)}%`) };
 
