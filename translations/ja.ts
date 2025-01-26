@@ -51,6 +51,7 @@ export const translations = {
   existingCategory: "既存のカテゴリーを選択",
   newCategory: "新しいカテゴリーを作成",
   language: "言語",
+  createdBy: "作成者：",
 };
 
 export type TranslationKeys = keyof typeof translations;

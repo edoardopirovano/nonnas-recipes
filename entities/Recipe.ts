@@ -47,6 +47,6 @@ export class Recipe {
   @Column({ type: "timestamp", nullable: true })
   lastTranslatedAt!: Date | null;
 
-  @ManyToOne(() => User, (user) => user.id, { nullable: true })
-  createdBy!: User | null;
+  @ManyToOne(() => User, (user) => user.id)
+  createdBy!: User;
 }

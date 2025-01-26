@@ -34,6 +34,7 @@ export async function POST(request: Request) {
       translateTo: ["en", "it", "ja"]
         .filter((lang) => lang !== body.language)
         .join(","),
+      createdBy: user,
     });
 
     await AppDataSource.getRepository(Recipe).save(recipe);

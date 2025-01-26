@@ -23,7 +23,7 @@ export default async function RecipePage({
 
   const recipe = await AppDataSource.getRepository(Recipe).findOne({
     where: { id: parseInt(params.id) },
-    relations: ["translatedFrom"],
+    relations: ["translatedFrom", "createdBy"],
   });
 
   if (!recipe) {
@@ -101,6 +101,15 @@ export default async function RecipePage({
                 {recipe.instructions}
               </div>
             </div>
+
+            {recipe.createdBy.name && (
+              <div>
+                <div className="text-lg italic">
+                  {getServerTranslation("createdBy")}
+                </div>
+                <div className="text-s">{recipe.createdBy.name}</div>
+              </div>
+            )}
 
             <div>
               <div className="text-lg italic">
