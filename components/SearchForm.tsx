@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface SearchFormProps {
   categories: string[];
@@ -11,6 +12,7 @@ interface SearchFormProps {
 
 export function SearchForm({ categories, creators }: SearchFormProps) {
   const router = useRouter();
+  const { language } = useLanguage();
   const { t } = useTranslation();
 
   const allCategories = categories[0];
@@ -69,6 +71,7 @@ export function SearchForm({ categories, creators }: SearchFormProps) {
           {creators.map((creator, i) => (
             <option key={i} value={creator}>
               {creator}
+              {language === "ja" ? "さん" : ""}
             </option>
           ))}
         </select>

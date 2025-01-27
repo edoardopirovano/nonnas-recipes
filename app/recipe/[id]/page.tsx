@@ -1,7 +1,10 @@
 import { AppDataSource, initDb } from "../../../lib/db";
 import { Recipe } from "../../../entities/Recipe";
 import { notFound } from "next/navigation";
-import { getServerTranslation } from "@/utils/serverTranslation";
+import {
+  getServerLanguage,
+  getServerTranslation,
+} from "@/utils/serverTranslation";
 import { RandomImage } from "@/components/RandomImage";
 import { BackToSearchLink } from "@/components/BackToSearchLink";
 import Link from "next/link";
@@ -19,6 +22,7 @@ export default async function RecipePage({
   params,
   searchParams,
 }: RecipePageProps) {
+  const language = getServerLanguage();
   await initDb();
 
   const recipe = await AppDataSource.getRepository(Recipe).findOne({
@@ -106,7 +110,10 @@ export default async function RecipePage({
                 <div className="text-lg italic">
                   {getServerTranslation("createdBy")}
                 </div>
-                <div className="text-s">{recipe.createdBy.name}</div>
+                <div className="text-s">
+                  {recipe.createdBy.name}
+                  {language === "ja" ? "さん" : ""}
+                </div>
               </div>
             )}
 
