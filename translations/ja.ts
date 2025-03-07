@@ -56,6 +56,7 @@ export const translations = {
   byCreator: "作成者で検索",
   allCreators: "すべての作成者",
   title: "タイトル",
+  shuffleResults: "結果をシャッフル",
 };
 
 export type TranslationKeys = keyof typeof translations;

@@ -1,6 +1,6 @@
 import { AppDataSource } from "../../lib/db";
 import { Recipe } from "../../entities/Recipe";
-import { FindOptionsWhere, ILike } from "typeorm";
+import { FindOptionsWhere, ILike, FindOptionsOrder } from "typeorm";
 import { initDb } from "../../lib/db";
 import { PaginationControls } from "@/components/PaginationControls";
 import Link from "next/link";
@@ -17,6 +17,7 @@ interface SearchPageProps {
     page?: string;
     creator?: string;
     instructions?: string;
+    shuffle?: string;
   };
 }
 
@@ -31,6 +32,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     page = "1",
     creator,
     instructions,
+    shuffle,
   } = searchParams;
   const currentPage = parseInt(page);
 
@@ -45,18 +47,41 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     whereClause.createdBy = { name: ILike(`%${decodeURIComponent(creator)}%`) };
   if (instructions)
     whereClause.instructions = ILike(`%${decodeURIComponent(instructions)}%`);
+
+  const orderClause: FindOptionsOrder<Recipe> = shuffle
+    ? { id: "DESC" } // Using DESC as a proxy for random since RANDOM is not supported
+    : { title: "ASC" };
+
   const [recipes, total] = await AppDataSource.getRepository(
     Recipe
   ).findAndCount({
     where: whereClause,
     skip: (currentPage - 1) * ITEMS_PER_PAGE,
     take: ITEMS_PER_PAGE,
-    order: { title: "ASC" },
+    order: orderClause,
   });
 
   await AppDataSource.destroy();
 
   const totalPages = Math.max(1, Math.ceil(total / ITEMS_PER_PAGE));
+
+  const createQueryString = (params: Record<string, string | undefined>) => {
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) searchParams.append(key, value);
+    });
+    return searchParams.toString();
+  };
+
+  const toggleShuffle = () => {
+    const newParams = { ...searchParams };
+    if (shuffle) {
+      delete newParams.shuffle;
+    } else {
+      newParams.shuffle = "true";
+    }
+    return createQueryString(newParams);
+  };
 
   return (
     <main className="min-h-screen bg-[lightgrey] p-4 sm:p-8">
@@ -78,6 +103,16 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   {getServerTranslation("page")}: {currentPage} / {totalPages}
                 </span>
               </th>
+            </tr>
+            <tr>
+              <td className="text-center">
+                <Link
+                  href={`/search?${toggleShuffle()}`}
+                  className="inline-block px-3 py-1 bg-white border border-gray-300 hover:bg-gray-100 font-['Comic_Sans_MS']"
+                >
+                  {getServerTranslation("shuffleResults")}
+                </Link>
+              </td>
             </tr>
           </tbody>
         </table>

@@ -56,6 +56,7 @@ export const translations = {
   byCreator: "By author",
   allCreators: "All authors",
   title: "Title",
+  shuffleResults: "Shuffle results",
 };
 
 export type TranslationKeys = keyof typeof translations;

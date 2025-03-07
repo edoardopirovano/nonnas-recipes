@@ -49,6 +49,7 @@ export const translations = {
   newRecipe: "Nuova ricetta",
   delete: "Elimina",
   deleteConfirmation: "Sei sicuro di voler eliminare questa ricetta?",
+  shuffleResults: "Mischia risultati",
   existingCategory: "Scegli una categoria esistente",
   newCategory: "Crea una nuova categoria",
   language: "Lingua",
