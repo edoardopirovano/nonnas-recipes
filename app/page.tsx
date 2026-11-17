@@ -62,7 +62,7 @@ export default function Home() {
         </Link>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-8 text-[mediumslateblue] font-comic mb-8">
+      <div className="flex flex-wrap justify-center gap-12 text-teal-700 font-bold font-comic mb-8">
         <div className="flex items-center gap-2">
           {t("visitors")}:{" "}
           <DigitDisplay number={data?.stats?.visitorCount || 0} />
