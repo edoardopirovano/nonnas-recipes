@@ -34,7 +34,7 @@ export default function Home() {
       <ImageGrid />
 
       <div className="max-w-4xl text-center mb-8">
-        <h1 className="text-4xl font-bold text-red-600 mb-6 font-comic">
+        <h1 className="text-5xl font-bold text-red-700 mb-6 font-comic">
           {t("welcome")}
         </h1>
         <p className="text-[mediumslateblue] italic mb-4">{t("description")}</p>
