@@ -25,14 +25,6 @@ export default function RootLayout({
       <head>
         <meta charSet="UTF-8" />
         <title>Rosanna&apos;s Recipes</title>
-        {
-          // eslint-disable-next-line @next/next/no-sync-scripts
-          <script
-            data-recording-token="nOwUMoLXWiQJsMB9li28JOza8KdzQtUDQ9ZZ1Yl1"
-            data-is-production-environment="false"
-            src="https://snippet.meticulous.ai/v1/meticulous.js"
-          />
-        }
         <GoogleAnalytics gaId="G-85J7W0VP2Z" />
       </head>
       <body>
