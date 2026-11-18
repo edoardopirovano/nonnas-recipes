@@ -32,7 +32,7 @@ export function PaginationControls({
       {currentPage > 1 && (
         <Link
           href={`/search?${createQueryString(currentPage - 1)}`}
-          className="px-3 py-1 bg-white border border-gray-300 hover:bg-gray-100 font-['Comic_Sans_MS']"
+          className="px-3 py-1 bg-white border border-gray-300 rounded-full hover:bg-gray-100 font-['Comic_Sans_MS']"
         >
           {"<"}
         </Link>
@@ -40,7 +40,7 @@ export function PaginationControls({
       {currentPage < totalPages && (
         <Link
           href={`/search?${createQueryString(currentPage + 1)}`}
-          className="px-3 py-1 bg-white border border-gray-300 hover:bg-gray-100 font-['Comic_Sans_MS']"
+          className="px-3 py-1 bg-white border border-gray-300 rounded-full hover:bg-gray-100 font-['Comic_Sans_MS']"
         >
           {">"}
         </Link>
@@ -48,7 +48,7 @@ export function PaginationControls({
       {currentPage < totalPages - 1 && (
         <Link
           href={`/search?${createQueryString(totalPages)}`}
-          className="px-3 py-1 bg-white border border-gray-300 hover:bg-gray-100 font-['Comic_Sans_MS']"
+          className="px-3 py-1 bg-white border border-gray-300 rounded-full hover:bg-gray-100 font-['Comic_Sans_MS']"
         >
           {">>"}
         </Link>
